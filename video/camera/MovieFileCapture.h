@@ -8,7 +8,7 @@
 
 #import "Capture.h"
 
-@interface FileCapture : Capture<AVCaptureFileOutputRecordingDelegate>
+@interface MovieFileCapture : Capture<AVCaptureFileOutputRecordingDelegate>
 
 
 @property (nonatomic,strong)AVCaptureDeviceInput *audioInput;

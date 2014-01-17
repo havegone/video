@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "VideoCapture.h"
+#import "VideoDataCapture.h"
 //dispatch_semaphore_t
 
 @interface VideoDataCapture ()<AVCaptureVideoDataOutputSampleBufferDelegate>

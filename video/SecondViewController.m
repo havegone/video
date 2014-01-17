@@ -7,11 +7,11 @@
 //
 
 #import "SecondViewController.h"
-#import "VideoCamera.h"
-#import "ImageCamera.h"
+#import "VideoDataCapture.h"
+#import "StillImageCapture.h"
 
 @interface SecondViewController ()
-@property (nonatomic,strong)ImageCamera* camera;
+@property (nonatomic,strong)StillImageCapture* camera;
 @end
 
 @implementation SecondViewController{
@@ -22,7 +22,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.camera = [[ImageCamera alloc]initWithParentView:self.view];
+    self.camera = [[StillImageCapture alloc]initWithParentView:self.view];
     [self.camera buildSession];
     
     takePhotoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
