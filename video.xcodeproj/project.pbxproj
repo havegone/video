@@ -30,6 +30,8 @@
 		650766221887DCD2000C2993 /* VideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 650766211887DCD2000C2993 /* VideoCamera.m */; };
 		656EE0DB1889139F001F3F50 /* Camera+Focus.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DA1889139F001F3F50 /* Camera+Focus.m */; };
 		656EE0DE18891423001F3F50 /* Camera+Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DD18891423001F3F50 /* Camera+Torch.m */; };
+		656EE0E218891C7B001F3F50 /* FileCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0E118891C7B001F3F50 /* FileCamera.m */; };
+		65BE73051889526700E02A9F /* ImageCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BE73041889526700E02A9F /* ImageCamera.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +78,10 @@
 		650766211887DCD2000C2993 /* VideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCamera.m; sourceTree = "<group>"; };
 		656EE0DA1889139F001F3F50 /* Camera+Focus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Camera+Focus.m"; sourceTree = "<group>"; };
 		656EE0DD18891423001F3F50 /* Camera+Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Camera+Torch.m"; sourceTree = "<group>"; };
+		656EE0E018891C7B001F3F50 /* FileCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileCamera.h; sourceTree = "<group>"; };
+		656EE0E118891C7B001F3F50 /* FileCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileCamera.m; sourceTree = "<group>"; };
+		65BE73031889526700E02A9F /* ImageCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageCamera.h; sourceTree = "<group>"; };
+		65BE73041889526700E02A9F /* ImageCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCamera.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,10 +199,14 @@
 			children = (
 				6507661C1887B5E8000C2993 /* Camera.h */,
 				656EE0DA1889139F001F3F50 /* Camera+Focus.m */,
+				656EE0DD18891423001F3F50 /* Camera+Torch.m */,
 				6507661D1887B5E8000C2993 /* Camera.m */,
 				650766201887DCD2000C2993 /* VideoCamera.h */,
 				650766211887DCD2000C2993 /* VideoCamera.m */,
-				656EE0DD18891423001F3F50 /* Camera+Torch.m */,
+				656EE0E018891C7B001F3F50 /* FileCamera.h */,
+				656EE0E118891C7B001F3F50 /* FileCamera.m */,
+				65BE73031889526700E02A9F /* ImageCamera.h */,
+				65BE73041889526700E02A9F /* ImageCamera.m */,
 			);
 			path = camera;
 			sourceTree = "<group>";
@@ -300,7 +310,9 @@
 			files = (
 				650766221887DCD2000C2993 /* VideoCamera.m in Sources */,
 				650765EC188775C8000C2993 /* SecondViewController.m in Sources */,
+				65BE73051889526700E02A9F /* ImageCamera.m in Sources */,
 				650765E3188775C8000C2993 /* AppDelegate.m in Sources */,
+				656EE0E218891C7B001F3F50 /* FileCamera.m in Sources */,
 				650765E9188775C8000C2993 /* FirstViewController.m in Sources */,
 				6507661E1887B5E8000C2993 /* Camera.m in Sources */,
 				656EE0DE18891423001F3F50 /* Camera+Torch.m in Sources */,
