@@ -6,12 +6,12 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
+#import "Capture.h"
 
 typedef void(^CaptureImageBlock) (UIImage* image,NSError*error);
 typedef void(^CaptureImageBlock2) (CMSampleBufferRef imageBuffer,NSError*error);
 
-@interface ImageCamera : Camera
+@interface StillImageCapture : Capture
 
 @property (nonatomic,copy) NSDictionary* stillImageSettings;
 @property (nonatomic,copy) CaptureImageBlock captureImageBlock;

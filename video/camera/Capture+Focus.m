@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
+#import "Capture.h"
 
-@implementation Camera (Focus)
+@implementation Capture (Focus)
 
 #pragma mark -
 #pragma mark foucus/exposure/balance

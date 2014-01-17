@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "FileCamera.h"
+#import "MovieFileCapture.h"
 
-@implementation FileCamera
+@implementation MovieFileCapture
 
-- (AVCaptureOutput*) createOutput{
+- (AVCaptureOutput*) createCameraOutput{
     self.fileOutput = [[AVCaptureMovieFileOutput alloc] init];
     return self.fileOutput;
 }

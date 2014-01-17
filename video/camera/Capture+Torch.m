@@ -6,13 +6,13 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
-@interface Camera ()
+#import "Capture.h"
+@interface Capture ()
 @property (readwrite) BOOL torchOn;
 @property (readwrite) BOOL flashOn;
 @end
 
-@implementation Camera(Torch)
+@implementation Capture(Torch)
 
 
 - (void) turnOnTorchAndFlash:(BOOL)on{

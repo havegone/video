@@ -6,11 +6,11 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "ImageCamera.h"
+#import "StillImageCapture.h"
 
 
 
-@implementation ImageCamera
+@implementation StillImageCapture
 
 - (AVCaptureOutput*) createOutput{
     

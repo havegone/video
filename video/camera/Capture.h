@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-@class Camera;
+@class Capture;
 
 typedef NS_ENUM(NSInteger, CameraPresetGravity) {
     CameraPresetGravityResizeAspect,
@@ -19,11 +19,13 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 
 
-@interface Camera : NSObject
+@interface Capture : NSObject
 
 @property (nonatomic,strong) AVCaptureSession       *captureSession;
 @property (nonatomic,strong) AVCaptureInput         *cameraInput;
+@property (nonatomic,strong) AVCaptureInput         *audioInput;
 @property (nonatomic,strong) AVCaptureOutput        *cameraOutput;
+@property (nonatomic,strong) AVCaptureOutput        *audioOutput;
 @property (nonatomic,strong) AVCaptureConnection    *cameraConnection;
 @property (nonatomic,strong) AVCaptureVideoPreviewLayer *previewLayer;
 @property (nonatomic,strong,readonly)AVCaptureDevice *cameraDevice;
@@ -61,8 +63,10 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) pause;
 - (void) resume;
 
-- (AVCaptureOutput*)    createOutput;
-- (AVCaptureDeviceInput*)     createInput;
+- (AVCaptureOutput*)    createCameraOutput;
+- (AVCaptureOutput*)    createAudioOutput;
+- (AVCaptureDeviceInput*)     createCameraInput;
+- (AVCaptureDeviceInput*)     createAudioInput;
 //exclude camera output
 - (NSArray*)            createInputs;
 - (AVCaptureSession*)   createSession;
@@ -81,7 +85,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 @end
 
 
-@interface Camera (Focus)
+@interface Capture (Focus)
 
 - (void) lockFocus;
 - (void) unlockFocus;
@@ -95,7 +99,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 
 
-@interface Camera (Torch)
+@interface Capture (Torch)
 
 - (void) turnOnTorchAndFlash:(BOOL)on;
 - (BOOL) hasTorch;

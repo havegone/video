@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
+#import "Capture.h"
 
-@interface Camera (){
+@interface Capture (){
    
     BOOL _cameraAvailable;
     BOOL _sessionBuilt;
@@ -19,7 +19,7 @@
 
 @end
 
-@implementation Camera
+@implementation Capture
 @synthesize torchOn = _torchOn;
 @synthesize flashOn = _flashOn;
 
@@ -123,14 +123,19 @@
 }
 
 
-- (AVCaptureOutput*) createOutput{
+- (AVCaptureOutput*) createCameraOutput{
     [NSException raise:NSInternalInconsistencyException
                 format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
     return nil;
 }
-- (AVCaptureDeviceInput*) createInput{
+
+- (AVCaptureOutput*) createAudioOutput{
+    return nil;
+}
+
+- (AVCaptureDeviceInput*) createCameraInput{
     NSError *error = nil;
-    AVCaptureDevice *device = [Camera cameraDeviceWithPosition:self.cameraPosition];
+    AVCaptureDevice *device = [Capture cameraDeviceWithPosition:self.cameraPosition];
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
     if(!input){
@@ -140,6 +145,10 @@
     }
     
     return input;
+}
+
+- (AVCaptureDeviceInput*)     createAudioInput{
+    return nil;
 }
 - (NSArray*) createInputs{
 //    [NSException raise:NSInternalInconsistencyException
@@ -175,8 +184,10 @@
 
 - (void) buildSession{
     
-    AVCaptureDeviceInput* input = [self createInput];
-    AVCaptureOutput* output = [self createOutput];
+    AVCaptureDeviceInput* camerainput = [self createCameraInput];
+    AVCaptureDeviceInput* audioInput = [self createAudioInput];
+    AVCaptureOutput* cameraOutput = [self createCameraOutput];
+    AVCaptureOutput* audioOutput = [self createAudioOutput];
     AVCaptureSession* session = [self createSession];
     NSArray * inputs = [self createInputs];
     
@@ -184,24 +195,34 @@
     [session beginConfiguration];
     
     for (AVCaptureDeviceInput * tmpInput in inputs) {
-        if([input device]!=[tmpInput device] && [session canAddInput:tmpInput]){
+        if([camerainput device]!=[tmpInput device] && [camerainput device] != [audioInput device] && [session canAddInput:tmpInput] ){
            [session addInput:tmpInput];
             if([[tmpInput device] hasMediaType:AVMediaTypeVideo]){
-                self.cameraInput = input;
+                self.cameraInput = camerainput;
                 [self configureFPSForDevice:self.cameraDevice];
             }
         }
     }
     
-    if([session canAddInput:input]){
-        [session addInput:input];
-        self.cameraInput = input;
+    if(camerainput && [session canAddInput:camerainput]){
+        [session addInput:camerainput];
+        self.cameraInput = camerainput;
         [self configureFPSForDevice:self.cameraDevice];
     }
     
-    if([session canAddOutput:output]){
-        [session addOutput:output];
-        self.cameraOutput = output;
+    if(audioInput && [session canAddInput:audioInput]){
+        [session addInput:audioInput];
+        self.audioInput = audioInput;
+    }
+    
+    if(cameraOutput && [session canAddOutput:cameraOutput]){
+        [session addOutput:cameraOutput];
+        self.cameraOutput = cameraOutput;
+    }
+    
+    if(audioOutput && [session canAddOutput:audioOutput]){
+        [session addOutput:audioOutput];
+        self.audioOutput = audioOutput;
     }
     [session commitConfiguration];
     
@@ -408,7 +429,7 @@
         self.cameraPosition = AVCaptureDevicePositionBack;
     }
     NSError *error = nil;
-    AVCaptureDevice *device = [Camera cameraDeviceWithPosition:self.cameraPosition];
+    AVCaptureDevice *device = [Capture cameraDeviceWithPosition:self.cameraPosition];
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
     
    

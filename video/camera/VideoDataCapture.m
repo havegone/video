@@ -6,17 +6,17 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "VideoCamera.h"
+#import "VideoCapture.h"
 //dispatch_semaphore_t
 
-@interface VideoCamera ()<AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface VideoDataCapture ()<AVCaptureVideoDataOutputSampleBufferDelegate>
 {
     dispatch_semaphore_t _sampleSemaphore;
 }
 
 @end
 
-@implementation VideoCamera
+@implementation VideoDataCapture
 
 - (void) configure{
     _sampleQueue = dispatch_queue_create("video.camera.queue", DISPATCH_QUEUE_SERIAL);
@@ -24,7 +24,7 @@
     
 }
 
-- (AVCaptureOutput*)createOutput{
+- (AVCaptureOutput*)createCameraOutput{
     
     [self configure];
     
@@ -61,6 +61,10 @@
     }
     
     [self.videoDataOutput setSampleBufferDelegate:self queue:self.sampleQueue];
+
+    if(self.settings){
+        [self.videoDataOutput setVideoSettings:self.settings];
+    }
 
     
     NSLog(@"[Camera] created AVCaptureVideoDataOutput at %d FPS", self.defaultFPS);

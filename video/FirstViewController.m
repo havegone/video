@@ -12,7 +12,7 @@
 
 @interface FirstViewController ()
 
-@property (nonatomic,strong)Camera* camera;
+@property (nonatomic,strong)Capture* camera;
 
 @end
 

@@ -6,19 +6,19 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
+#import "Capture.h"
 
 #define DegreesToRadians(degrees) ((CGFloat)degrees * M_PI / 180)
 
 @protocol SampleProcessDelegate;
 
-@interface VideoCamera : Camera
+@interface VideoDataCapture : Capture
 
 @property (nonatomic,readonly) dispatch_queue_t sampleQueue;
 @property (nonatomic,strong) AVCaptureVideoDataOutput   *videoDataOutput;
 @property (nonatomic,strong) CALayer            *customPreviewLayer;
 
-
+@property (nonatomic,copy) NSDictionary* settings;
 @property (nonatomic,weak) id delegate;
 
 - (void) configure;

@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 com.taobao. All rights reserved.
 //
 
-#import "Camera.h"
+#import "Capture.h"
 
-@interface FileCamera : Camera<AVCaptureFileOutputRecordingDelegate>
+@interface FileCapture : Capture<AVCaptureFileOutputRecordingDelegate>
 
 
 @property (nonatomic,strong)AVCaptureDeviceInput *audioInput;
