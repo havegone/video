@@ -39,7 +39,11 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 @property (nonatomic,readonly) int imageWidth;
 @property (nonatomic,readonly) int imageHeight;
-@property (nonatomic,assign) CameraPresetGravity  presetGravity;  //default is CameraPresetGravityResizeAspectFill
+//
+//default is CameraPresetGravityResizeAspectFill
+//
+@property (nonatomic,assign) CameraPresetGravity  presetGravity;
+
 @property (nonatomic,readonly,getter = isTorchOn) BOOL torchOn;
 @property (nonatomic,readonly,getter = isFlashOn) BOOL flashOn;
 
@@ -58,7 +62,9 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) resume;
 
 - (AVCaptureOutput*)    createOutput;
-- (AVCaptureInput*)     createInput;
+- (AVCaptureDeviceInput*)     createInput;
+//exclude camera output
+- (NSArray*)            createInputs;
 - (AVCaptureSession*)   createSession;
 - (void) buildSession;
 

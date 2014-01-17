@@ -8,6 +8,14 @@
 
 #import "Camera.h"
 
-@interface FileCamera : Camera
+@interface FileCamera : Camera<AVCaptureFileOutputRecordingDelegate>
+
+
+@property (nonatomic,strong)AVCaptureDeviceInput *audioInput;
+@property (nonatomic,strong)AVCaptureFileOutput *fileOutput;
+@property (nonatomic,strong)NSString            *filePath;
+
+- (NSString*)generatePath;
+- (AVCaptureDeviceInput*)createAudioInput;
 
 @end

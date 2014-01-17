@@ -8,6 +8,7 @@
 
 #import "FirstViewController.h"
 #import "VideoCamera.h"
+#import "FileCamera.h"
 
 @interface FirstViewController ()
 
@@ -17,13 +18,14 @@
 
 @implementation FirstViewController{
     UIButton* torchBtn;
+    UIButton* recordBtn;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.camera = [[VideoCamera alloc]initWithParentView:self.view];
+    self.camera = [[FileCamera alloc]initWithParentView:self.view];
     self.camera.defaultFPS = 25;
     self.camera.sessionPreset = AVCaptureSessionPreset1280x720;
 //    self.camera.presetGravity = CameraPresetGravityResize;
@@ -52,6 +54,15 @@
     [self.view addSubview:switchCameraBtn];
     
     
+    recordBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    recordBtn.frame = CGRectMake(120,20, 50, 30);
+    recordBtn.backgroundColor = [UIColor redColor];
+    //    switchCameraBtn.titleLabel.text = @"switch";
+    [recordBtn setTitle:@"start" forState:UIControlStateNormal];
+    [recordBtn addTarget:self action:@selector(recordHandler) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:recordBtn];
+    
+    
 }
 
 - (void)torchHandler{
@@ -64,10 +75,21 @@
    
     [torchBtn setEnabled:[self.camera hasTorch]];
 }
+- (void)recordHandler{
+    static BOOL record = NO;
+    record = !record;
+    if(record){
+        [recordBtn setTitle:@"stop" forState:UIControlStateNormal];
+        [self.camera start];
+    }else{
+        [recordBtn setTitle:@"start" forState:UIControlStateNormal];
+        [self.camera stop];
+    }
+}
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.camera start];
+//    [self.camera start];
     //[self.camera turnOnFlash:YES];
 //    [self.camera switchCamera];
 //    [self.camera turnOnTorchAndFlash:YES];

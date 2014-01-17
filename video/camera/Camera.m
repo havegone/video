@@ -128,7 +128,7 @@
                 format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
     return nil;
 }
-- (AVCaptureInput*) createInput{
+- (AVCaptureDeviceInput*) createInput{
     NSError *error = nil;
     AVCaptureDevice *device = [Camera cameraDeviceWithPosition:self.cameraPosition];
     AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
@@ -140,6 +140,11 @@
     }
     
     return input;
+}
+- (NSArray*) createInputs{
+//    [NSException raise:NSInternalInconsistencyException
+//                format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
+    return nil;
 }
 - (AVCaptureSession*) createSession{
     
@@ -170,12 +175,23 @@
 
 - (void) buildSession{
     
-    AVCaptureInput* input = [self createInput];
+    AVCaptureDeviceInput* input = [self createInput];
     AVCaptureOutput* output = [self createOutput];
     AVCaptureSession* session = [self createSession];
+    NSArray * inputs = [self createInputs];
     
     
     [session beginConfiguration];
+    
+    for (AVCaptureDeviceInput * tmpInput in inputs) {
+        if([input device]!=[tmpInput device] && [session canAddInput:tmpInput]){
+           [session addInput:tmpInput];
+            if([[tmpInput device] hasMediaType:AVMediaTypeVideo]){
+                self.cameraInput = input;
+                [self configureFPSForDevice:self.cameraDevice];
+            }
+        }
+    }
     
     if([session canAddInput:input]){
         [session addInput:input];
@@ -362,8 +378,8 @@
         }
         DefineWeakSelf();
         dispatch_async(dispatch_get_main_queue(), ^{
-            wself.running = YES;
             [wself.captureSession startRunning];
+            wself.running = YES;
         });
     }
 }

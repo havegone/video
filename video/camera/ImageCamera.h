@@ -8,6 +8,16 @@
 
 #import "Camera.h"
 
+typedef void(^CaptureImageBlock) (UIImage* image,NSError*error);
+typedef void(^CaptureImageBlock2) (CMSampleBufferRef imageBuffer,NSError*error);
+
 @interface ImageCamera : Camera
+
+@property (nonatomic,copy) NSDictionary* stillImageSettings;
+@property (nonatomic,copy) CaptureImageBlock captureImageBlock;
+@property (nonatomic,copy) CaptureImageBlock2 captureImageBlock2;
+
+- (void) takePicture:(CaptureImageBlock)block;
+- (void) takePictureWithSampleBuffer:(CaptureImageBlock2)block;
 
 @end
