@@ -8,19 +8,11 @@
 
 #import "Camera.h"
 
-static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+#define DegreesToRadians(degrees) ((CGFloat)degrees * M_PI / 180)
 
-@protocol SampleProcessDelegate <NSObject>
-
-@optional
-
-- (void)processImage:(UIImage*)image;
-- (UIImage*)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
-
-@end
+@protocol SampleProcessDelegate;
 
 @interface VideoCamera : Camera
-
 
 @property (nonatomic,readonly) dispatch_queue_t sampleQueue;
 @property (nonatomic,strong) AVCaptureVideoDataOutput   *videoDataOutput;
@@ -31,5 +23,15 @@ static CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 
 - (void) configure;
 
+
+@end
+
+
+
+@protocol SampleProcessDelegate <NSObject>
+
+@optional
+- (void)processImage:(UIImage*)image;
+- (UIImage*)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 
 @end

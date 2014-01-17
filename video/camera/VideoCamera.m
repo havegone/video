@@ -139,7 +139,7 @@
         }
         
         layer.position = CGPointMake(self.parentView.frame.size.width/2., self.parentView.frame.size.height/2.);
-        layer.affineTransform = CGAffineTransformMakeRotation( DegreesToRadians(rotation_angle) );
+        layer.affineTransform = CGAffineTransformMakeRotation(DegreesToRadians(rotation_angle));
         layer.bounds = bounds;
     }
     

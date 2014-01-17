@@ -65,6 +65,18 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) createVideoPreviewLayer;
 - (void) createCustomVideoPreview;
 
+- (void) switchCamera;
+- (void) updateOrientation;
+
+- (NSString* const) getPresentGravity;
+- (NSArray*) supportFrameRateRange;
+
+
+@end
+
+
+@interface Camera (Focus)
+
 - (void) lockFocus;
 - (void) unlockFocus;
 - (void) focusAtPoint:(CGPoint)point;
@@ -73,25 +85,17 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) lockExposure;
 - (void) unlockExposure;
 
+@end
+
+
+
+@interface Camera (Torch)
 
 - (void) turnOnTorchAndFlash:(BOOL)on;
 - (BOOL) hasTorch;
 - (void) turnOnTorch:(BOOL)on;
 - (BOOL) hasFlash;
 - (void) turnOnFlash:(BOOL)on;
-
-- (void) switchCamera;
-
-
-
-- (void) updateOrientation;
-
-
-- (NSString* const) getPresentGravity;
-//- (void) configureFPSForDevice:(AVCaptureDevice*)device;
-
-- (NSArray*) supportFrameRateRange;
-
 
 @end
 
