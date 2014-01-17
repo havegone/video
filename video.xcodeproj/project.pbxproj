@@ -28,6 +28,8 @@
 		6507661B18878122000C2993 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6507661A18878122000C2993 /* AssetsLibrary.framework */; };
 		6507661E1887B5E8000C2993 /* Camera.m in Sources */ = {isa = PBXBuildFile; fileRef = 6507661D1887B5E8000C2993 /* Camera.m */; };
 		650766221887DCD2000C2993 /* VideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 650766211887DCD2000C2993 /* VideoCamera.m */; };
+		656EE0DB1889139F001F3F50 /* Camera+Focus.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DA1889139F001F3F50 /* Camera+Focus.m */; };
+		656EE0DE18891423001F3F50 /* Camera+Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DD18891423001F3F50 /* Camera+Torch.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,8 @@
 		6507661F1887BF49000C2993 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		650766201887DCD2000C2993 /* VideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoCamera.h; sourceTree = "<group>"; };
 		650766211887DCD2000C2993 /* VideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCamera.m; sourceTree = "<group>"; };
+		656EE0DA1889139F001F3F50 /* Camera+Focus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Camera+Focus.m"; sourceTree = "<group>"; };
+		656EE0DD18891423001F3F50 /* Camera+Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Camera+Torch.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,9 +192,11 @@
 			isa = PBXGroup;
 			children = (
 				6507661C1887B5E8000C2993 /* Camera.h */,
+				656EE0DA1889139F001F3F50 /* Camera+Focus.m */,
 				6507661D1887B5E8000C2993 /* Camera.m */,
 				650766201887DCD2000C2993 /* VideoCamera.h */,
 				650766211887DCD2000C2993 /* VideoCamera.m */,
+				656EE0DD18891423001F3F50 /* Camera+Torch.m */,
 			);
 			path = camera;
 			sourceTree = "<group>";
@@ -297,6 +303,8 @@
 				650765E3188775C8000C2993 /* AppDelegate.m in Sources */,
 				650765E9188775C8000C2993 /* FirstViewController.m in Sources */,
 				6507661E1887B5E8000C2993 /* Camera.m in Sources */,
+				656EE0DE18891423001F3F50 /* Camera+Torch.m in Sources */,
+				656EE0DB1889139F001F3F50 /* Camera+Focus.m in Sources */,
 				650765DF188775C8000C2993 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -506,6 +514,7 @@
 				65076606188775C8000C2993 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		65076607188775C8000C2993 /* Build configuration list for PBXNativeTarget "videoTests" */ = {
 			isa = XCConfigurationList;
@@ -514,6 +523,7 @@
 				65076609188775C8000C2993 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
