@@ -10,15 +10,24 @@
 
 //http://blog.csdn.net/zengconggen/article/details/7595449
 
-@interface VACapture()<AVCaptureAudioDataOutputSampleBufferDelegate>
-
+@interface VACapture()<AVCaptureVideoDataOutputSampleBufferDelegate,AVCaptureAudioDataOutputSampleBufferDelegate>
+{
+    BOOL _canStartRecording;
+    BOOL _interrupt;
+    CMTime _lastVideo;
+    CMTime _timeOffset;
+    CMTime _lastAudio;
+    dispatch_queue_t  _audioSampleQueue;
+}
+@property (nonatomic,assign,readwrite)BOOL isRecording;
+@property (nonatomic,assign,readwrite)BOOL isPause;
 @end
 
 @implementation VACapture
 - (void) setDefaultValues{
     [super setDefaultValues];
-    _audioSampleQueue = dispatch_queue_create("audio.capture.queue", DISPATCH_QUEUE_SERIAL);
     
+
     //video
     self.vbitRate = 128.0*1024.0;
     self.vcodec = AVVideoCodecH264;
@@ -31,6 +40,10 @@
     self.sampleRate = 44100.0;
     self.channel = 1;
     self.format = kAudioFormatMPEG4AAC;
+    
+    _canStartRecording = YES;
+    _interrupt = NO;
+    _isPause = NO;
 
 }
 
@@ -66,10 +79,10 @@
         [self generateFilePath];
     }
     
-    self.videoWriter = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:self.filePath]
+    self.writer = [[AVAssetWriter alloc] initWithURL:[NSURL fileURLWithPath:self.filePath]
                                                  fileType:self.fileType
                                                     error:&error];
-    NSParameterAssert(self.videoWriter);
+    NSParameterAssert(self.writer);
     NSErrorLog(error);
     
     self.videoWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo outputSettings:self.videoWriterSettings];
@@ -82,9 +95,9 @@
     self.adaptor = [AVAssetWriterInputPixelBufferAdaptor assetWriterInputPixelBufferAdaptorWithAssetWriterInput:self.videoWriterInput sourcePixelBufferAttributes:sourcePixelBufferAttributesDictionary];
     
     NSParameterAssert(self.videoWriterInput);
-    NSParameterAssert([self.videoWriter canAddInput:self.videoWriterInput]);
+    NSParameterAssert([self.writer canAddInput:self.videoWriterInput]);
     
-    if ([self.videoWriter canAddInput:self.videoWriterInput])
+    if ([self.writer canAddInput:self.videoWriterInput])
         NSLog(@"I can add this input");
     else
         NSLog(@"i can't add this input");
@@ -99,7 +112,7 @@
     self.audioWriterInput.expectsMediaDataInRealTime = YES;
 }
 
--(void) initWriters
+-(void) initWriter
 {
     
     [self initAudioSettings];
@@ -108,8 +121,8 @@
     [self initVideoWriter];
     [self initAudioWriter];
     
-    [self.videoWriter addInput:self.audioWriterInput];
-    [self.videoWriter addInput:self.videoWriterInput];
+    [self.writer addInput:self.audioWriterInput];
+    [self.writer addInput:self.videoWriterInput];
     
 }
 
@@ -141,75 +154,194 @@
 - (AVCaptureOutput*)createAudioOutput{
     AVCaptureAudioDataOutput* audioOutput = [[AVCaptureAudioDataOutput alloc]init];
     
-    [audioOutput setSampleBufferDelegate:self queue:_audioSampleQueue];
+    [audioOutput setSampleBufferDelegate:self queue:self.sampleQueue];
     
     return audioOutput;
 }
 
 - (void)buildSession{
-    [self initWriters];
     [super buildSession];
+    [self.videoDataOutput setSampleBufferDelegate:self queue:self.sampleQueue];
 }
-- (void)start:(StartRecordBlock)block{
-    self.startBlock = block;
-    [self start];
+- (void)start{
+    _interrupt = NO;
+    _timeOffset = CMTimeMake(0, 0);
+    [super start];
 }
-- (void)stop:(FinishRecordBlock)block{
-    self.finishBlock = block;
-    DefineWeakSelf();
-    [self.videoWriter finishWritingWithCompletionHandler:^{
-        if(wself.finishBlock){
-            wself.finishBlock();
+
+- (void)startRecord:(StartRecordBlock)block{
+    @synchronized(self)
+    {
+        if(!self.isRecording){
+            [self initWriter];
+            self.startBlock = block;
+            self.isRecording = YES;
         }
-    }];
-    [self stop];
+    }
+    
 }
+
+- (void)stopRecord:(FinishRecordBlock)block{
+    @synchronized(self)
+    {
+        if(!self.isRecording)
+            return;
+        self.finishBlock = block;
+        self.isRecording = NO;
+        DefineWeakSelf();
+        dispatch_async(self.sampleQueue, ^{
+            [wself.writer finishWritingWithCompletionHandler:^{
+                NSLog(@"finish recode");
+                _canStartRecording = YES;
+                if(wself.finishBlock){
+                    wself.finishBlock();
+                }
+            }];
+            
+        });
+    }
+    
+   
+}
+
+- (BOOL)pauseRecord{
+    @synchronized(self)
+    {
+        if(self.isRecording){
+            self.isPause = YES;
+            _interrupt = YES;
+            return YES;
+        }
+    }
+    return NO;
+}
+- (BOOL)resumeRecord{
+    @synchronized(self)
+    {
+        if(self.isRecording){
+            self.isPause = NO;
+            return YES;
+        }
+    }
+    return NO;
+}
+
+
+
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
     //observe session status change
     
 }
+
+- (CMSampleBufferRef) adjustTime:(CMSampleBufferRef) sample by:(CMTime) offset
+{
+    CMItemCount count;
+    CMSampleBufferGetSampleTimingInfoArray(sample, 0, nil, &count);
+    CMSampleTimingInfo* pInfo = malloc(sizeof(CMSampleTimingInfo) * count);
+    CMSampleBufferGetSampleTimingInfoArray(sample, count, pInfo, &count);
+    
+    for (CMItemCount i = 0; i < count; i++){
+        pInfo[i].decodeTimeStamp = CMTimeSubtract(pInfo[i].decodeTimeStamp, offset);
+        pInfo[i].presentationTimeStamp = CMTimeSubtract(pInfo[i].presentationTimeStamp, offset);
+    }
+    
+    CMSampleBufferRef sout;
+    CMSampleBufferCreateCopyWithNewTiming(nil, sample, count, pInfo, &sout);
+    free(pInfo);
+    return sout;
+}
+
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
-    static int frame = 0;
-    CMTime lastSampleTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    if(frame++ == 0 && self.videoWriter.status != AVAssetWriterStatusWriting)
+    @synchronized(self)
     {
-        [self.videoWriter startWriting];
-        [self.videoWriter startSessionAtSourceTime:lastSampleTime];
-    }
-    
-    if(captureOutput == self.cameraOutput){
-        
-        if(self.videoWriter.status == AVAssetWriterStatusFailed){
+        if(!self.isRecording||self.isPause){
             return;
         }
         
-        if(self.videoWriterInput.isReadyForMoreMediaData){
-            if([self.videoWriterInput appendSampleBuffer:sampleBuffer]){
-                NSLog(@"");
-            }else{
-                NSLog(@"append video sample buffer failed");
-            }
+        BOOL isVideo = YES;
+        
+        if(captureOutput == self.audioOutput){
+            isVideo = NO;
         }
-    }
+        
+        if (_interrupt){
+            if (isVideo){
+                return;
+            }
+            _interrupt = NO;
+            
+            CMTime presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            CMTime last = isVideo ? _lastVideo : _lastAudio;
+            if (last.flags & kCMTimeFlags_Valid){
+                if (_timeOffset.flags & kCMTimeFlags_Valid){
+                    presentTimeStamp = CMTimeSubtract(presentTimeStamp, _timeOffset);
+                }
+                CMTime offset = CMTimeSubtract(presentTimeStamp, last);
+                if (_timeOffset.value == 0){
+                    _timeOffset = offset;
+                }
+                else{
+                    _timeOffset = CMTimeAdd(_timeOffset, offset);
+                }
+            }
+            _lastVideo.flags = 0;
+            _lastAudio.flags = 0;
+        }
+        CFRetain(sampleBuffer);
+        if (_timeOffset.value > 0){
+            CFRelease(sampleBuffer);
+            sampleBuffer = [self adjustTime:sampleBuffer by:_timeOffset];
+        }
+        
+        CMTime presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+        CMTime duration = CMSampleBufferGetDuration(sampleBuffer);
+        if (duration.value > 0){
+            presentTimeStamp = CMTimeAdd(presentTimeStamp, duration);
+        }
+        
+        if (isVideo){
+            _lastVideo = presentTimeStamp;
+        }
+        else{
+            _lastAudio = presentTimeStamp;
+        }
     
-    if(captureOutput == self.audioOutput){
-        if(self.videoWriter.status == AVAssetWriterStatusFailed){
-            return;
-        }
-        
-        if(self.audioWriterInput.isReadyForMoreMediaData){
-            if([self.audioWriterInput appendSampleBuffer:sampleBuffer]){
-                NSLog(@"");
-            }else{
-                NSLog(@"appedn audio sampel buffer failed");
-            }
-        }
-        
+        [self encodeFrame:sampleBuffer isVideo:isVideo];
+        CFRelease(sampleBuffer);
     }
     
 }
+
+- (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo
+{
+    if (CMSampleBufferDataIsReady(sampleBuffer))
+    {
+        if (_writer.status == AVAssetWriterStatusUnknown){
+            CMTime startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            [_writer startWriting];
+            [_writer startSessionAtSourceTime:startTime];
+        }
+        if (_writer.status == AVAssetWriterStatusFailed){
+            NSLog(@"error %@", _writer.error.localizedDescription);
+            return NO;
+        }
+        if (isVideo){
+            if (self.videoWriterInput.readyForMoreMediaData){
+                [self.videoWriterInput appendSampleBuffer:sampleBuffer];
+                return YES;
+            }
+        }else{
+            if(self.audioWriterInput.readyForMoreMediaData){
+                [self.audioWriterInput appendSampleBuffer:sampleBuffer];
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
 
 
 @end

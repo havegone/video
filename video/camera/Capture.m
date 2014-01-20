@@ -261,17 +261,17 @@
 
 - (void) configureConntion{
     if(self.cameraConnection){
-//        if([self.cameraConnection isVideoMirroringSupported]){
-//            self.cameraConnection.videoMirrored = YES;
-//        }
+        if([self.cameraConnection isVideoMirroringSupported]){
+            self.cameraConnection.videoMirrored = YES;
+        }
         
-//        if([self.cameraConnection isVideoOrientationSupported]){
-//            self.cameraConnection.videoOrientation = self.defaultAVCaptureVideoOrientation;
-//        }
+        if([self.cameraConnection isVideoOrientationSupported]){
+            self.cameraConnection.videoOrientation = self.defaultAVCaptureVideoOrientation;
+        }
         
-//        if([self.cameraConnection isVideoStabilizationSupported]){
-//            self.cameraConnection.enablesVideoStabilizationWhenAvailable = YES;
-//        }
+        if([self.cameraConnection isVideoStabilizationSupported]){
+            self.cameraConnection.enablesVideoStabilizationWhenAvailable = YES;
+        }
         
 //        if([self.cameraConnection isVideoMaxFrameDurationSupported]){
 //            

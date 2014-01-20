@@ -20,6 +20,7 @@
 @implementation FirstViewController{
     UIButton* torchBtn;
     UIButton* recordBtn;
+    UIButton* pauseBtn;
 }
 
 - (void)viewDidLoad
@@ -66,6 +67,17 @@
     [self.view addSubview:recordBtn];
     
     
+    pauseBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    pauseBtn.frame = CGRectMake(200,20, 50, 30);
+    pauseBtn.backgroundColor = [UIColor blueColor];
+    //    switchCameraBtn.titleLabel.text = @"switch";
+    [pauseBtn setTitle:@"pause" forState:UIControlStateNormal];
+    [pauseBtn addTarget:self action:@selector(pauseHandler) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:pauseBtn];
+    
+    
+    
+    
 }
 
 - (void)torchHandler{
@@ -83,16 +95,29 @@
     record = !record;
     if(record){
         [recordBtn setTitle:@"stop" forState:UIControlStateNormal];
-        [self.camera start:nil];
+        [self.camera generateFilePath];
+        [self.camera startRecord:nil];
     }else{
         [recordBtn setTitle:@"start" forState:UIControlStateNormal];
-        [self.camera stop:nil];
+        [self.camera stopRecord:nil];
+    }
+}
+- (void)pauseHandler{
+    static BOOL record = NO;
+    record = !record;
+    if(record){
+        [pauseBtn setTitle:@"resume" forState:UIControlStateNormal];
+        [self.camera pauseRecord];
+    }else{
+        [pauseBtn setTitle:@"pause" forState:UIControlStateNormal];
+        [self.camera resumeRecord];
     }
 }
 
+
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    [self.camera start];
+    [self.camera start];
     //[self.camera turnOnFlash:YES];
 //    [self.camera switchCamera];
 //    [self.camera turnOnTorchAndFlash:YES];

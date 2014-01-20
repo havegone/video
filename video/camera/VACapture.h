@@ -16,10 +16,8 @@ typedef void(^FinishRecordBlock)(void);
 @interface VACapture : VideoDataCapture
 
 @property (nonatomic,copy) NSDictionary* audioSettings;
-@property (nonatomic,readonly) dispatch_queue_t audioSampleQueue;
-@property (nonatomic,strong) AVAssetWriter *videoWriter;
+@property (nonatomic,strong) AVAssetWriter *writer;
 @property (nonatomic,strong) AVAssetWriterInput *videoWriterInput;
-@property (nonatomic,strong) AVAssetWriter *audioWriter;
 @property (nonatomic,strong) AVAssetWriterInput *audioWriterInput;
 @property (nonatomic,copy) NSDictionary *videoWriterSettings;
 @property (nonatomic,copy) NSDictionary *audioWriterSettings;
@@ -28,6 +26,7 @@ typedef void(^FinishRecordBlock)(void);
 
 @property (nonatomic,copy) StartRecordBlock startBlock;
 @property (nonatomic,copy) FinishRecordBlock finishBlock;
+@property (nonatomic,assign,readonly)BOOL isRecording;
 
 
 //acl
@@ -53,7 +52,7 @@ typedef void(^FinishRecordBlock)(void);
 @property (nonatomic,assign) int       vheight;
 
 
-- (void)initWriters;
+- (void)initWriter;
 - (void)initVideoWriter;
 - (void)initAudioWriter;
 
@@ -64,8 +63,10 @@ typedef void(^FinishRecordBlock)(void);
 //now the block did not has function,will be implement later
 //
 //
-- (void)start:(StartRecordBlock)block;
-- (void)stop:(FinishRecordBlock)block;
+- (void)startRecord:(StartRecordBlock)block;
+- (void)stopRecord:(FinishRecordBlock)block;
+- (BOOL)pauseRecord;
+- (BOOL)resumeRecord;
 
 
 @end

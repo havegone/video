@@ -10,9 +10,7 @@
 //dispatch_semaphore_t
 
 @interface VideoDataCapture ()<AVCaptureVideoDataOutputSampleBufferDelegate>
-{
-    dispatch_semaphore_t _sampleSemaphore;
-}
+
 
 @end
 
@@ -21,7 +19,6 @@
 - (void) setDefaultValues{
     [super setDefaultValues];
     _sampleQueue = dispatch_queue_create("video.capture.queue", DISPATCH_QUEUE_SERIAL);
-    _sampleSemaphore = dispatch_semaphore_create(1);
 }
 
 
@@ -156,8 +153,7 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     static int count = 0;
     NSLog(@"%d",count++);
-    if (dispatch_semaphore_wait(_sampleSemaphore, DISPATCH_TIME_NOW)) {
-        
+    @synchronized(self){
         UIImage* image = nil;
         CGImageRef dstImage = nil;
         if ([self.delegate respondsToSelector:@selector(processSampleBuffer:)]) {
@@ -197,14 +193,11 @@
             CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
         }
         
-        
         if ([self.delegate respondsToSelector:@selector(processImage:)]) {
             [self.delegate processImage:image];
         }
         
-        
         if(self.customPreviewLayer && !self.useAVCaptureVideoPreviewLayer){
-            // render buffer
             dispatch_sync(dispatch_get_main_queue(), ^{
                 CGImageRef oldImage = (__bridge CGImageRef)(self.customPreviewLayer.contents);
                 self.customPreviewLayer.contents = (__bridge id)[image CGImage];
@@ -214,10 +207,8 @@
             CGImageRelease(dstImage);
         }
         
-        
-        dispatch_semaphore_signal (_sampleSemaphore);
-        
     }
+    
 
 }
 
