@@ -18,15 +18,15 @@
 
 @implementation VideoDataCapture
 
-- (void) configure{
-    _sampleQueue = dispatch_queue_create("video.camera.queue", DISPATCH_QUEUE_SERIAL);
+- (void) setDefaultValues{
+    [super setDefaultValues];
+    _sampleQueue = dispatch_queue_create("video.capture.queue", DISPATCH_QUEUE_SERIAL);
     _sampleSemaphore = dispatch_semaphore_create(1);
-    
 }
+
 
 - (AVCaptureOutput*)createCameraOutput{
     
-    [self configure];
     
     self.videoDataOutput = [[AVCaptureVideoDataOutput alloc]init];
 

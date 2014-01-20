@@ -10,7 +10,7 @@
 #define video_log_h
 
 //common log
-#define NSErrorLog(error)  NSLog(@"%@:%d error:%@",NSStringFromSelector(_cmd),__LINE__,error)
+#define NSErrorLog(error)  do{ if(error) NSLog(@"%@:%d error:%@",NSStringFromSelector(_cmd),__LINE__,error);}while(0)
 
 
 #endif

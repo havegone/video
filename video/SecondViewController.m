@@ -9,9 +9,11 @@
 #import "SecondViewController.h"
 #import "VideoDataCapture.h"
 #import "StillImageCapture.h"
+#import "AudioDataCapture.h"
+
 
 @interface SecondViewController ()
-@property (nonatomic,strong)StillImageCapture* camera;
+@property (nonatomic,strong)AudioDataCapture* camera;
 @end
 
 @implementation SecondViewController{
@@ -22,7 +24,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.camera = [[StillImageCapture alloc]initWithParentView:self.view];
+    self.camera = [[AudioDataCapture alloc]initWithParentView:self.view];
     [self.camera buildSession];
     
     takePhotoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -54,11 +56,11 @@
 
 - (void)takePhotoHandler{
     DefineWeakSelf();
-    [self.camera takePicture:^(UIImage *image, NSError *error) {
-        if(image){
-            [photoImageView setImage:image];
-        }
-    }];
+//    [self.camera takePicture:^(UIImage *image, NSError *error) {
+//        if(image){
+//            [photoImageView setImage:image];
+//        }
+//    }];
 }
 
 - (void)didReceiveMemoryWarning

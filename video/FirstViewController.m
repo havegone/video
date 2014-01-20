@@ -9,10 +9,11 @@
 #import "FirstViewController.h"
 #import "VideoDataCapture.h"
 #import "MovieFileCapture.h"
+#import "VACapture.h"
 
 @interface FirstViewController ()
 
-@property (nonatomic,strong)Capture* camera;
+@property (nonatomic,strong)VACapture* camera;
 
 @end
 
@@ -25,7 +26,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.camera = [[MovieFileCapture alloc]initWithParentView:self.view];
+//    self.camera = [[MovieFileCapture alloc]initWithParentView:self.view];
+    self.camera = [[VACapture alloc]initWithParentView:self.view];
+//    self.camera = [[VideoDataCapture alloc]initWithParentView:self.view];
     self.camera.defaultFPS = 25;
     self.camera.sessionPreset = AVCaptureSessionPreset1280x720;
 //    self.camera.presetGravity = CameraPresetGravityResize;
@@ -80,10 +83,10 @@
     record = !record;
     if(record){
         [recordBtn setTitle:@"stop" forState:UIControlStateNormal];
-        [self.camera start];
+        [self.camera start:nil];
     }else{
         [recordBtn setTitle:@"start" forState:UIControlStateNormal];
-        [self.camera stop];
+        [self.camera stop:nil];
     }
 }
 

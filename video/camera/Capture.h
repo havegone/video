@@ -53,7 +53,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 + (AVCaptureDevice*) cameraDeviceWithPosition:(AVCaptureDevicePosition)position;
 
-
+- (void) setDefaultValues;
 - (id)initWithParentView:(UIView*)parent;
 
 - (BOOL) isRunning;
@@ -63,13 +63,15 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) pause;
 - (void) resume;
 
-- (AVCaptureOutput*)    createCameraOutput;
-- (AVCaptureOutput*)    createAudioOutput;
-- (AVCaptureDeviceInput*)     createCameraInput;
-- (AVCaptureDeviceInput*)     createAudioInput;
+- (AVCaptureOutput*) createCameraOutput;
+//default not implement. 
+- (AVCaptureOutput*) createAudioOutput;
+- (AVCaptureDeviceInput*) createCameraInput;
+//default not implement.
+- (AVCaptureDeviceInput*) createAudioInput;
 //exclude camera output
-- (NSArray*)            createInputs;
-- (AVCaptureSession*)   createSession;
+- (NSArray*) createInputs;
+- (AVCaptureSession*) createSession;
 - (void) buildSession;
 
 - (void) createVideoPreviewLayer;

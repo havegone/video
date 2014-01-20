@@ -21,7 +21,6 @@
 @property (nonatomic,copy) NSDictionary* settings;
 @property (nonatomic,weak) id delegate;
 
-- (void) configure;
 
 
 @end
@@ -33,5 +32,7 @@
 @optional
 - (void)processImage:(UIImage*)image;
 - (UIImage*)processSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+
+
 
 @end

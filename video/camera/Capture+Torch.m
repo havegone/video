@@ -14,7 +14,6 @@
 
 @implementation Capture(Torch)
 
-
 - (void) turnOnTorchAndFlash:(BOOL)on{
     
     AVCaptureDevice* device = self.cameraDevice;

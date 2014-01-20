@@ -8,6 +8,7 @@
 
 #import "Capture.h"
 
+
 @interface Capture (){
    
     BOOL _cameraAvailable;
@@ -15,15 +16,16 @@
 }
 
 @property(assign) BOOL running;
-
+@property (readwrite) BOOL torchOn;
+@property (readwrite) BOOL flashOn;
+@property (readwrite) UIDeviceOrientation currentDeviceOrientation;
 
 @end
 
 @implementation Capture
-@synthesize torchOn = _torchOn;
-@synthesize flashOn = _flashOn;
-
-@synthesize currentDeviceOrientation = _currentDeviceOrientation;
+//@synthesize torchOn = _torchOn;
+//@synthesize flashOn = _flashOn;
+//@synthesize currentDeviceOrientation = _currentDeviceOrientation;
 
 
 + (AVCaptureDevice*) cameraDeviceWithPosition:(AVCaptureDevicePosition)position{
@@ -45,7 +47,7 @@
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    _currentDeviceOrientation = [[UIDevice currentDevice] orientation];
+    self.currentDeviceOrientation = [[UIDevice currentDevice] orientation];
     
     
     // check if camera available
@@ -57,7 +59,7 @@
     // set camera default configuration
     self.cameraPosition = AVCaptureDevicePositionBack;
     self.defaultAVCaptureVideoOrientation = AVCaptureVideoOrientationPortrait;
-    self.defaultFPS = 15;
+    self.defaultFPS = 20;
     self.sessionPreset = AVCaptureSessionPreset640x480;
     self.presetGravity = CameraPresetGravityResizeAspectFill;
     
@@ -334,7 +336,7 @@
         case UIDeviceOrientationPortraitUpsideDown:
         case UIDeviceOrientationLandscapeLeft:
         case UIDeviceOrientationLandscapeRight:
-            _currentDeviceOrientation = orientation;
+            self.currentDeviceOrientation = orientation;
             break;
             
         case UIDeviceOrientationFaceUp:
