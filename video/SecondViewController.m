@@ -24,34 +24,34 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.camera = [[AudioDataCapture alloc]initWithParentView:self.view];
-    [self.camera buildSession];
-    
-    takePhotoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    takePhotoBtn.frame = CGRectMake(0,20, 50, 30);
-    // torchBtn.backgroundColor = [UIColor redColor];
-    //     torchBtn.titleLabel.text = @"torch";
-    [takePhotoBtn setTitle:@"take" forState:UIControlStateNormal];
-    
-    [takePhotoBtn addTarget:self action:@selector(takePhotoHandler) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:takePhotoBtn];
-    
-    
-    photoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0,50, 50,50)];
-    photoImageView.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:photoImageView];
+//    self.camera = [[AudioDataCapture alloc]initWithParentView:self.view];
+//    [self.camera buildSession];
+//    
+//    takePhotoBtn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    takePhotoBtn.frame = CGRectMake(0,20, 50, 30);
+//    // torchBtn.backgroundColor = [UIColor redColor];
+//    //     torchBtn.titleLabel.text = @"torch";
+//    [takePhotoBtn setTitle:@"take" forState:UIControlStateNormal];
+//    
+//    [takePhotoBtn addTarget:self action:@selector(takePhotoHandler) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:takePhotoBtn];
+//    
+//    
+//    photoImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0,50, 50,50)];
+//    photoImageView.backgroundColor = [UIColor whiteColor];
+//    [self.view addSubview:photoImageView];
     
 
 	// Do any additional setup after loading the view, typically from a nib.
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.camera start];
+   // [self.camera start];
 }
 
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
-    [self.camera stop];
+    //[self.camera stop];
 }
 
 - (void)takePhotoHandler{

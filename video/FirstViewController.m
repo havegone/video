@@ -106,11 +106,12 @@
     static BOOL record = NO;
     record = !record;
     if(record){
-        [pauseBtn setTitle:@"resume" forState:UIControlStateNormal];
-        [self.camera pauseRecord];
+        if([self.camera pauseRecord])
+            [pauseBtn setTitle:@"resume" forState:UIControlStateNormal];
+
     }else{
-        [pauseBtn setTitle:@"pause" forState:UIControlStateNormal];
-        [self.camera resumeRecord];
+        if([self.camera resumeRecord])
+            [pauseBtn setTitle:@"pause" forState:UIControlStateNormal];
     }
 }
 
@@ -118,6 +119,7 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.camera start];
+    [self.camera resumeRecord];
     //[self.camera turnOnFlash:YES];
 //    [self.camera switchCamera];
 //    [self.camera turnOnTorchAndFlash:YES];
@@ -126,6 +128,7 @@
 - (void)viewDidDisappear:(BOOL)animated{
     [super viewDidDisappear:animated];
 //    [self.camera turnOnTorchAndFlash:NO];
+    [self.camera pauseRecord];
     [self.camera stop];
 }
 - (void)didReceiveMemoryWarning

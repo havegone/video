@@ -58,11 +58,8 @@ typedef void(^FinishRecordBlock)(void);
 
 - (NSString*)generateFilePath;
 
-//
-//*****
-//now the block did not has function,will be implement later
-//
-//
+//reset segmental record
+- (void)startWithReset;
 - (void)startRecord:(StartRecordBlock)block;
 - (void)stopRecord:(FinishRecordBlock)block;
 - (BOOL)pauseRecord;

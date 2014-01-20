@@ -163,7 +163,8 @@
     [super buildSession];
     [self.videoDataOutput setSampleBufferDelegate:self queue:self.sampleQueue];
 }
-- (void)start{
+
+- (void)startWithReset{
     _interrupt = NO;
     _timeOffset = CMTimeMake(0, 0);
     [super start];
@@ -205,9 +206,8 @@
 }
 
 - (BOOL)pauseRecord{
-    @synchronized(self)
-    {
-        if(self.isRecording){
+    @synchronized(self){
+        if(self.isRecording && !self.isPause){
             self.isPause = YES;
             _interrupt = YES;
             return YES;
@@ -216,9 +216,8 @@
     return NO;
 }
 - (BOOL)resumeRecord{
-    @synchronized(self)
-    {
-        if(self.isRecording){
+    @synchronized(self){
+        if(self.isRecording && self.isPause){
             self.isPause = NO;
             return YES;
         }
@@ -289,6 +288,8 @@
             _lastVideo.flags = 0;
             _lastAudio.flags = 0;
         }
+        
+
         CFRetain(sampleBuffer);
         if (_timeOffset.value > 0){
             CFRelease(sampleBuffer);
@@ -307,9 +308,10 @@
         else{
             _lastAudio = presentTimeStamp;
         }
-    
+        
         [self encodeFrame:sampleBuffer isVideo:isVideo];
         CFRelease(sampleBuffer);
+        
     }
     
 }
