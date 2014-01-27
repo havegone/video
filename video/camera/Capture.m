@@ -261,8 +261,12 @@
 
 - (void) configureConntion{
     if(self.cameraConnection){
-        if([self.cameraConnection isVideoMirroringSupported]){
+
+        
+        if (self.cameraPosition == AVCaptureDevicePositionFront) {
             self.cameraConnection.videoMirrored = YES;
+        } else {
+            self.cameraConnection.videoMirrored = NO;
         }
         
         if([self.cameraConnection isVideoOrientationSupported]){
