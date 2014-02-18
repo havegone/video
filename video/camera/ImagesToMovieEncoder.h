@@ -21,7 +21,7 @@
 
 
 - (id)initWithImages:(NSArray*)images toFile:(NSString*)filePath withDurarion:(NSInteger)duration andFPS:(NSInteger)fps andSize:(CGSize)size;
-- (void)start:(StopDidBlock)finishBlock;
+- (void)start:(MovieEncoderStatusChangeBlock)statusChangeBlock;
 
 
 @end

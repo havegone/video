@@ -60,8 +60,8 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 - (void) start;
 - (void) stop;
-- (void) pause;
-- (void) resume;
+//- (void) pause;
+//- (void) resume;
 
 - (AVCaptureOutput*) createCameraOutput;
 //default not implement. 

@@ -420,12 +420,12 @@
     }
     
 }
-- (void) pause{
-    [self stop];
-}
-- (void) resume{
-    [self start];
-}
+//- (void) pause{
+//    [self stop];
+//}
+//- (void) resume{
+//    [self start];
+//}
 
 
 - (void) switchCamera{

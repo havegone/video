@@ -8,18 +8,27 @@
 
 #import "MovieEncoder.h"
 
-@interface MovieEncoder ()
+@interface MovieEncoder (){
+    CMTime _lastVideoPts;
+    CMTime _lastAudioPts;
+    
+    CMTime _timeOffset;
+    BOOL   _hasInterrupted;
+}
 
 @property(readwrite) BOOL running;
+
 
 @end
 
 
 @implementation MovieEncoder
 
-- (id) initWithPath:(NSString*)filePath{
+- (instancetype) initWithPath:(NSString*)filePath statusChangeBlock:(MovieEncoderStatusChangeBlock)block;{
     if(self = [super init]){
         self.path = filePath;
+        self.statusChangeBlock = block;
+        self.isPuase = NO;
     }
     return self;
 }
@@ -59,25 +68,59 @@
 
 - (void) start{
     @synchronized(self){
-
-        [self setupWriter];
-        _running = YES;
         
+        if(!self.isRunning){
+            [self setupWriter];
+            [self resetTime];
+            _running = YES;
+            if(self.statusChangeBlock){
+                self.statusChangeBlock(MovieEncoderStatusStart);
+            }
+        }
     }
 }
-- (void) stop:(StopDidBlock)block{
+- (void) stop{
     @synchronized(self){
-        self.stopDidBlock = block;
-        _running = NO;
-        if(self.writer.status == AVAssetWriterStatusWriting){
-            DefineWeakSelf();
-            [self.writer finishWritingWithCompletionHandler:^{
-                if(wself.stopDidBlock){
-                    wself.stopDidBlock();
-                }
-            }];
-        }else{
-            NSLog(@"stop failed:%@",self.writer.error);
+        if(self.isRunning){
+            _running = NO;
+            self.isPuase = NO;
+            if(self.writer.status == AVAssetWriterStatusWriting){
+                DefineWeakSelf();
+                [self.writer finishWritingWithCompletionHandler:^{
+                    
+                    if(wself.statusChangeBlock){
+                        wself.statusChangeBlock(MovieEncoderStatusStop);
+                    }
+                    NSLog(@"finish");
+                }];
+                
+            }else{
+                NSLog(@"stop failed:%@",self.writer.error);
+            }
+        }
+    }
+}
+
+- (void)pause{
+    @synchronized(self){
+        if(!self.isPuase && self.isRunning){
+            self.isPuase = YES;
+            _hasInterrupted = YES;
+            
+            if(self.statusChangeBlock){
+                self.statusChangeBlock(MovieEncoderStatusPause);
+            }
+        }
+    }
+}
+
+- (void)resume{
+    @synchronized(self){
+        if(self.isPuase && self.isRunning){
+            self.isPuase = NO;
+            if(self.statusChangeBlock){
+                self.statusChangeBlock(MovieEncoderStatusResume);
+            }
         }
     }
 }
@@ -86,12 +129,10 @@
     return _running;
 }
 
-- (void) appendSampleBuffer:(CMSampleBufferRef)sampleBuffer toInput:(AVAssetWriterInput*)input{
-    //return;
-    
+- (BOOL) appendSampleBuffer:(CMSampleBufferRef)sampleBuffer toInput:(AVAssetWriterInput*)input{
+
     if (CMSampleBufferDataIsReady(sampleBuffer))
     {
-        
         if (self.writer.status == AVAssetWriterStatusUnknown){
             CMTime startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
             [self.writer startWriting];
@@ -99,25 +140,122 @@
         }
         if (self.writer.status == AVAssetWriterStatusFailed){
             NSLog(@"error %@", self.writer.error.localizedDescription);
-            return ;
+            return NO;
         }
-        
-//        while (!input.isReadyForMoreMediaData) {
-//            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-//        }
         
         if(input.isReadyForMoreMediaData){
             [input appendSampleBuffer:sampleBuffer];
+            return YES;
+        }else{
+            NSLog(@"append sample buffer failed");
         }
     }
+    
+    return NO;
 }
+
+
+- (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo
+{
+   return [self appendSampleBuffer:sampleBuffer toInput:isVideo?self.videoWriterInput:self.audioWriterInput];
+}
+
+
+- (void) resetTime{
+    _timeOffset = kCMTimeZero;
+    _lastAudioPts = kCMTimeZero;
+    _lastVideoPts = kCMTimeZero;
+}
+
+- (CMSampleBufferRef)adjustPts:(CMSampleBufferRef)sampleBuffer withTime:(CMTime)offset{
+    
+    CMSampleBufferRef sample = nil;
+    CMItemCount timingArrayEntriesNeededOut = 0;
+    CMSampleTimingInfo *timingArrayOut = nil;
+    CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, 0, nil,&timingArrayEntriesNeededOut);
+    if(timingArrayEntriesNeededOut){
+        timingArrayOut = malloc(sizeof(CMSampleTimingInfo)*timingArrayEntriesNeededOut);
+        CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, timingArrayEntriesNeededOut, timingArrayOut,&timingArrayEntriesNeededOut);
+    }
+    
+    if(timingArrayOut){
+        for (int i = 0 ; i < timingArrayEntriesNeededOut; ++i) {
+            timingArrayOut[i].presentationTimeStamp = CMTimeSubtract(timingArrayOut[i].presentationTimeStamp, offset);
+            timingArrayOut[i].decodeTimeStamp = CMTimeSubtract(timingArrayOut[i].decodeTimeStamp, offset);
+        }
+    }
+    
+    CMSampleBufferCreateCopyWithNewTiming(0, sampleBuffer, timingArrayEntriesNeededOut, timingArrayOut, &sample);
+    
+    if(timingArrayOut){
+        free(timingArrayOut);
+        timingArrayOut = nil;
+    }
+    
+    return sample;
+}
+
+
 
 - (void)captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo{
-    if(self.isRunning){
-        [self appendSampleBuffer:sampleBuffer toInput:isVideo?self.videoWriterInput:self.audioWriterInput];
+    
+    if(!self.isRunning || self.isPuase){
+        goto END;
     }
-
+    
+    if(_hasInterrupted){
+        if(isVideo){
+            goto END;
+        }
+        _hasInterrupted = NO;
+        //has resumed
+        CMTime pts = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+        CMTime lastPts = isVideo?_lastVideoPts:_lastAudioPts;
+        if (CMTIME_IS_VALID(lastPts)){
+            if(CMTIME_IS_VALID(_timeOffset)){
+                pts = CMTimeSubtract(pts, _timeOffset);
+            }
+            CMTime offset = CMTimeSubtract(pts, lastPts);
+            if(_timeOffset.value == 0){
+                _timeOffset = offset;
+            }else{
+                _timeOffset = CMTimeAdd(_timeOffset, offset);
+            }
+        }
+        
+        _lastAudioPts.flags = kCMTimeFlags_Valid;
+        _lastVideoPts.flags = kCMTimeFlags_Valid;
+        
+    }
+    
+    CFRetain(sampleBuffer);
+    if(CMTIME_IS_VALID(_timeOffset) && _timeOffset.value > 0){
+        CFRelease(sampleBuffer);
+        sampleBuffer = [self adjustPts:sampleBuffer withTime:_timeOffset];
+    }
+    NSParameterAssert(sampleBuffer);
+    
+    CMTime presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+    CMTime duration = CMSampleBufferGetDuration(sampleBuffer);
+    if (duration.value > 0){
+        presentTimeStamp = CMTimeAdd(presentTimeStamp, duration);
+    }
+    
+    if (isVideo){
+        _lastVideoPts = presentTimeStamp;
+    }
+    else{
+        _lastAudioPts = presentTimeStamp;
+    }
+    
+    [self encodeFrame:sampleBuffer isVideo:isVideo];
+    CFRelease(sampleBuffer);
+    
+END:
+    return;
 }
+
+
 
 
 @end

@@ -11,9 +11,22 @@
 #import <AVFoundation/AVFoundation.h>
 
 
-typedef void(^StopDidBlock)(void);
+typedef enum {
+    MovieEncoderStatusUnknown = 0,
+    MovieEncoderStatusStart = 1,
+    MovieEncoderStatusStop = 2,
+    MovieEncoderStatusPause = 3,
+    MovieEncoderStatusResume = 4,
+}MovieEncoderStatus;
+
+
+typedef void(^MovieEncoderStatusChangeBlock)(MovieEncoderStatus status);
 
 @protocol EncoderDelegate <NSObject>
+- (void) start;
+- (void) stop;
+- (void) pause;
+- (void) resume;
 - (void)captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo;
 @end
 
@@ -30,17 +43,22 @@ typedef void(^StopDidBlock)(void);
 @property(nonatomic)NSDictionary* audioSettings;
 @property(nonatomic)NSDictionary* videoSettings;
 
-@property(nonatomic,copy)StopDidBlock stopDidBlock;
+@property(nonatomic,copy)MovieEncoderStatusChangeBlock statusChangeBlock;
 
-- (id) initWithPath:(NSString*)filePath;
+@property(nonatomic)BOOL isPuase;
+
+- (instancetype) initWithPath:(NSString*)filePath statusChangeBlock:(MovieEncoderStatusChangeBlock)block;
 - (void) start;
-- (void) stop:(StopDidBlock)block;
+- (void) stop;
 - (void) pause;
 - (void) resume;
 
-- (void) rLock;
-- (void) rUnlock;
+- (void) setupAudioWriterInput;
+- (void) setupVideoWriterInput;
+- (void) setupWriter;
 
+- (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo;
+- (void)captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo;
 @end
 
 

@@ -9,6 +9,12 @@
 #import "ImagesToMovieEncoder.h"
 #import "UIImage+PixelBuffer.h"
 
+//http://blog.csdn.net/zengconggen/article/details/7595449
+//http://blog.csdn.net/linzhiji/article/details/6736704
+//http://blog.csdn.net/linzhiji/article/details/6735282
+//http://stackoverflow.com/questions/16475737/convert-uiimage-to-cmsamplebufferref
+//http://stackoverflow.com/questions/3741323/how-do-i-export-uiimage-array-as-a-movie/3742212#3742212
+
 @implementation ImagesToMovieEncoder
 
 - (void)setupVideoWriterInput{
@@ -23,25 +29,29 @@
                                                      sourcePixelBufferAttributes:nil];
 }
 
-- (void)start:(StopDidBlock)finishBlock{
+- (void)start:(MovieEncoderStatusChangeBlock)statusChangeBlock{
     [self setupWriter];
-    self.stopDidBlock = finishBlock;
+    self.statusChangeBlock = statusChangeBlock;
+    
+    NSAssert(0, @"");
+    
+//    dispatch_block_t
     DefineWeakSelf();
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [wself imagesToMovie];
         if([self.writer respondsToSelector:@selector(finishWritingWithCompletionHandler:)]){
-            [self.writer performSelector:@selector(finishWritingWithCompletionHandler:)withObject:wself.stopDidBlock];
+            [self.writer performSelector:@selector(finishWritingWithCompletionHandler:)withObject:nil];
         }else{
             [self.writer performSelector:@selector(finishWriting) withObject:nil];
-            if(wself.stopDidBlock){
-                wself.stopDidBlock();
+            if(wself.statusChangeBlock){
+                wself.statusChangeBlock(MovieEncoderStatusStart);
             }
         }
     });
 }
 
 - (id)initWithImages:(NSArray*)images toFile:(NSString*)filePath withDurarion:(NSInteger)duration andFPS:(NSInteger)fps andSize:(CGSize)size{
-    if(self = [super initWithPath:filePath]){
+    if(self = [super initWithPath:filePath statusChangeBlock:nil]){
         self.images = images;
         self.fps = fps;
         self.size = size;
