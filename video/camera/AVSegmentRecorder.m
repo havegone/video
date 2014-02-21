@@ -104,7 +104,6 @@
 
 - (void) _stopRecord{
     [super stopRecord];
-    
 }
 
 - (void) startRecord{
@@ -155,22 +154,7 @@
 }
 
 - (void) mergeToOutputFilePath{
-    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"start merge");
-//        CGSize vSize =  CGSizeMake(self.width, self.height);
-//        [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPreset640x480 withCompletionHandler:^(NSError *error) {
-//            
-//            if(!error){
-//                [self cleanTemporaryFiles];
-//                [self.tempFiles removeAllObjects];
-//            }
-//            
-//            NSLog(@"error:%@",error);
-//            NSLog(@"end merge");
-//            
-//        }];
-//    });
+
     NSOperationQueue * queue = [[NSOperationQueue alloc]init];
     [queue addOperationWithBlock:^{
         
