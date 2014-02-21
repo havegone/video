@@ -13,6 +13,7 @@
     CMTime _lastAudioPts;
     
     CMTime _timeOffset;
+    CMTime _startTimeStamp;
     BOOL   _hasInterrupted;
 }
 
@@ -74,7 +75,7 @@
             [self resetTime];
             _running = YES;
             if(self.statusChangeBlock){
-                self.statusChangeBlock(MovieEncoderStatusStart);
+                self.statusChangeBlock(self,MovieEncoderStatusStart);
             }
         }
     }
@@ -87,11 +88,9 @@
             if(self.writer.status == AVAssetWriterStatusWriting){
                 DefineWeakSelf();
                 [self.writer finishWritingWithCompletionHandler:^{
-                    
                     if(wself.statusChangeBlock){
-                        wself.statusChangeBlock(MovieEncoderStatusStop);
+                        wself.statusChangeBlock(wself,MovieEncoderStatusStop);
                     }
-                    NSLog(@"finish");
                 }];
                 
             }else{
@@ -108,7 +107,7 @@
             _hasInterrupted = YES;
             
             if(self.statusChangeBlock){
-                self.statusChangeBlock(MovieEncoderStatusPause);
+                self.statusChangeBlock(self,MovieEncoderStatusPause);
             }
         }
     }
@@ -119,7 +118,7 @@
         if(self.isPuase && self.isRunning){
             self.isPuase = NO;
             if(self.statusChangeBlock){
-                self.statusChangeBlock(MovieEncoderStatusResume);
+                self.statusChangeBlock(self,MovieEncoderStatusResume);
             }
         }
     }
@@ -135,6 +134,7 @@
     {
         if (self.writer.status == AVAssetWriterStatusUnknown){
             CMTime startTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            _startTimeStamp = startTime;
             [self.writer startWriting];
             [self.writer startSessionAtSourceTime:startTime];
         }
@@ -144,8 +144,9 @@
         }
         
         if(input.isReadyForMoreMediaData){
-            [input appendSampleBuffer:sampleBuffer];
-            return YES;
+            if([input appendSampleBuffer:sampleBuffer]){
+                return YES;
+            }
         }else{
             NSLog(@"append sample buffer failed");
         }
@@ -253,6 +254,11 @@
     
 END:
     return;
+}
+
+- (CGFloat)duration{
+    CMTime durationTime = CMTimeMaximum(CMTimeSubtract(_lastVideoPts, _startTimeStamp), CMTimeSubtract(_lastAudioPts, _startTimeStamp));
+    return CMTimeGetSeconds(durationTime);
 }
 
 

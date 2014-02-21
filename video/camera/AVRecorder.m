@@ -13,7 +13,7 @@
 
 @property(nonatomic,strong)NSDictionary *videoSettings;
 @property(nonatomic,strong)NSDictionary *audioSettings;
-@property(nonatomic,strong)MovieEncoder *encoder;
+@property(nonatomic) BOOL pause;
 @end
 
 
@@ -23,6 +23,7 @@
 -(instancetype)initWithParentView:(UIView *)parent{
     
     if(self = [super initWithParentView:parent]){
+        self.pause = NO;
     }
     return self;
 }
@@ -30,6 +31,7 @@
 - (instancetype)initWithParentView:(UIView *)parent andEncoder:(MovieEncoder*)encoder{
     if(self = [super initWithParentView:parent]){
         self.encoder = encoder;
+        self.pause = NO;
     }
     return self;
 }
@@ -109,18 +111,21 @@
 - (void)stopRecord{
     if(self.isRunning){
         [self.encoder stop];
+        self.pause = NO;
     }
 }
 
 - (void)pauseRecord{
-    if(self.isRunning){
+    if(self.isRunning && !self.pause){
         [self.encoder pause];
+        self.pause = YES;
     }
 
 }
 - (void)resumeRecord{
-    if(self.isRunning){
+    if(self.isRunning && self.pause){
         [self.encoder resume];
+        self.pause = NO;
     }
 
 }
@@ -158,5 +163,12 @@
     }
 }
 
+- (CGFloat)duration{
+    
+    return [self.encoder duration];
+}
 
+- (NSString*)filePath{
+    return self.encoder.path;
+}
 @end

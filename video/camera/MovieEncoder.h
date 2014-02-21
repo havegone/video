@@ -19,8 +19,8 @@ typedef enum {
     MovieEncoderStatusResume = 4,
 }MovieEncoderStatus;
 
-
-typedef void(^MovieEncoderStatusChangeBlock)(MovieEncoderStatus status);
+@class MovieEncoder;
+typedef void(^MovieEncoderStatusChangeBlock)(MovieEncoder* encoder,MovieEncoderStatus status);
 
 @protocol EncoderDelegate <NSObject>
 - (void) start;
@@ -38,6 +38,7 @@ typedef void(^MovieEncoderStatusChangeBlock)(MovieEncoderStatus status);
 @property(nonatomic)AVAssetWriterInput *audioWriterInput;
 @property(nonatomic)NSString *path;
 @property(nonatomic)NSString* fileType;
+
 
 @property(nonatomic,readonly,getter = isRunning) BOOL running;
 @property(nonatomic)NSDictionary* audioSettings;
@@ -58,7 +59,10 @@ typedef void(^MovieEncoderStatusChangeBlock)(MovieEncoderStatus status);
 - (void) setupWriter;
 
 - (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo;
-- (void)captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo;
+- (void) captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo;
+
+- (CGFloat)duration;
+
 @end
 
 

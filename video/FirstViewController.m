@@ -11,6 +11,7 @@
 #import "MovieFileCapture.h"
 #import "MovieEncoder.h"
 #import "AVRecorder.h"
+#import "AVSegmentRecorder.h"
 
 UIImageView * g_imageView;
 
@@ -18,8 +19,8 @@ UIImageView * g_imageView;
 
 @interface FirstViewController ()
 
-@property (nonatomic,strong)AVRecorder* recorder;
-
+@property (nonatomic,strong)AVSegmentRecorder* recorder;
+@property (nonatomic,strong)NSString*  filePath;
 
 @end
 
@@ -49,9 +50,35 @@ UIImageView * g_imageView;
 //    }];
 //    [self.camera buildSession];
     
-    self.recorder = [[AVRecorder alloc]initWithParentView:self.view andEncoder:[[MovieEncoder alloc]initWithPath:[AVRecorder genFilePath] statusChangeBlock:^(MovieEncoderStatus status){
-        NSLog(@"status:%d",status);
-    }]];
+    DefineWeakSelf();
+    
+    self.filePath = [AVRecorder genFilePath];
+    
+//    self.recorder = [[AVRecorder alloc]initWithParentView:self.view andEncoder:[[MovieEncoder alloc]initWithPath:self.filePath statusChangeBlock:^(MovieEncoder*encoder, MovieEncoderStatus status){
+//        
+//        switch (status) {
+//            case MovieEncoderStatusStop:
+//                NSLog(@"stop duration:%f",[wself.recorder duration]);
+//                [wself queryMovieDuration];
+//                break;
+//            case MovieEncoderStatusPause:
+//                NSLog(@"pause duration:%f",[wself.recorder duration]);
+//                break;
+//                
+//            default:
+//                break;
+//        }
+//
+//        NSLog(@"status:%d",status);
+//    }]];
+//    
+    
+    
+    
+    
+    
+    
+    self.recorder = [[AVSegmentRecorder alloc]initWithParentView:self.view andFilePath:self.filePath];
     [self.recorder buildSession];
 
     //self.camera.useAVCaptureVideoPreviewLayer = NO;
@@ -129,11 +156,12 @@ UIImageView * g_imageView;
 //        [self.camera generateFilePath];
 //        [self.camera startRecord:nil];
         
-        
+        self.recorder.filePath = [AVRecorder genFilePath];
         [self.recorder startRecord];
     }else{
         [recordBtn setTitle:@"start" forState:UIControlStateNormal];
         [self.recorder stopRecord];
+//        recordBtn.enabled = NO;
 //        [self.camera stopRecord:nil];
     }
 }
@@ -149,6 +177,8 @@ UIImageView * g_imageView;
         [self.recorder resumeRecord];
         //if([self.camera resumeRecord])
             [pauseBtn setTitle:@"pause" forState:UIControlStateNormal];
+        
+        
     }
 }
 - (void)muteHandler{
@@ -163,6 +193,40 @@ UIImageView * g_imageView;
             [muteBtn setTitle:@"mute" forState:UIControlStateNormal];
     }
 //    [self.camera enableMute:mute];
+//    NSDocumentDirectory
+   
+    
+    NSMutableArray* files = [NSMutableArray new];
+                        
+    //枚举目录中的内容
+    NSArray *dirArray;
+    NSFileManager *fm = [[NSFileManager alloc]init];
+    NSString *dirPath = NSTemporaryDirectory();//[fm currentDirectoryPath];  //当前目录
+    NSDirectoryEnumerator *dirEnum = [fm enumeratorAtPath:dirPath]; //开始枚举过程,将其存入dirEnum中.
+    
+    //向dirEnum发送nextObject消息,返回下一个文件路径,当没有可供枚举时,返回nil.
+    //enumeratorAtPath:方法会递归打印.
+    NSString *file;
+    while ((file = [dirEnum nextObject])) {
+        //if ([[file pathExtension] isEqualToString: @"doc"])
+        { //找出目录下面所有的doc文件
+            NSString *fullPath = [dirPath stringByAppendingPathComponent:file];
+            [files addObject:[NSURL fileURLWithPath:fullPath]];
+            NSLog(@"%@",fullPath);
+        }
+    }
+    
+//    dirArray = [fm contentsOfDirectoryAtPath:[fm currentDirectoryPath] error:NULL];
+//    NSLog(@"内容为:"); //使用contentsOfDirectoryAtPath:方法枚举当前路径中的文件并存入数组dirArray.
+//    for (NSString *path in dirArray){  //快速枚举数组中的内容并打印.
+//        NSLog(@"%@",path);
+//    }
+//    NSArray* files = [[NSFileManager defaultManager]contentsOfDirectoryAtPath:NSTemporaryDirectory() error:nil];
+    NSString* outFile = [AVRecorder genFilePath];
+    [AVSegmentRecorder mergeFiles:files toFile:[NSURL fileURLWithPath:outFile] withVideoSize:CGSizeMake(640, 480) withPreset:AVAssetExportPreset640x480 withCompletionHandler:^(NSError *error) {
+        
+        NSLog(@"%@",error);
+    }];
 }
 
 
@@ -189,6 +253,14 @@ UIImageView * g_imageView;
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) queryMovieDuration{
+    NSURL * fileUrl = [NSURL fileURLWithPath:self.filePath];
+    AVAsset * asset = [AVAsset assetWithURL:fileUrl];
+    CMTime duration = asset.duration;
+    
+    NSLog(@"duration:%f",CMTimeGetSeconds(duration));
 }
 
 @end

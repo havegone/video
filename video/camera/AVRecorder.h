@@ -34,7 +34,9 @@
 //default 480
 @property (nonatomic,assign) int       height;
 
+@property(nonatomic,strong)MovieEncoder *encoder;
 
+@property(nonatomic,readonly) BOOL pause;
 
 - (instancetype)initWithParentView:(UIView *)parent andEncoder:(MovieEncoder*)encoder;
 
@@ -45,5 +47,8 @@
 
 
 + (NSString*)genFilePath;
+
+- (CGFloat)duration;
+- (NSString*)filePath;
 
 @end

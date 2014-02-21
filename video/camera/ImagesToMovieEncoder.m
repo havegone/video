@@ -44,7 +44,7 @@
         }else{
             [self.writer performSelector:@selector(finishWriting) withObject:nil];
             if(wself.statusChangeBlock){
-                wself.statusChangeBlock(MovieEncoderStatusStart);
+                wself.statusChangeBlock(wself,MovieEncoderStatusStart);
             }
         }
     });

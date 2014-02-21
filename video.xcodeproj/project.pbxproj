@@ -33,6 +33,8 @@
 		656EE0E218891C7B001F3F50 /* MovieFileCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0E118891C7B001F3F50 /* MovieFileCapture.m */; };
 		6590C5B518B32807008EF5FF /* AVCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 6590C5B418B32807008EF5FF /* AVCapture.m */; };
 		6590C5B818B32AA3008EF5FF /* AVRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6590C5B718B32AA3008EF5FF /* AVRecorder.m */; };
+		65BA16B518B452A6002CD0AB /* AVAssetStitcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA16B418B452A6002CD0AB /* AVAssetStitcher.m */; };
+		65BA16B918B47B45002CD0AB /* AVSegmentRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA16B818B47B45002CD0AB /* AVSegmentRecorder.m */; };
 		65BE73051889526700E02A9F /* StillImageCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BE73041889526700E02A9F /* StillImageCapture.m */; };
 		65BE730818895C0E00E02A9F /* AudioDataCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BE730718895C0E00E02A9F /* AudioDataCapture.m */; };
 		65BE730E188E594700E02A9F /* MovieSampleFragment.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BE730D188E594700E02A9F /* MovieSampleFragment.m */; };
@@ -73,14 +75,12 @@
 		650765FC188775C8000C2993 /* videoTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "videoTests-Info.plist"; sourceTree = "<group>"; };
 		650765FE188775C8000C2993 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		65076600188775C8000C2993 /* videoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = videoTests.m; sourceTree = "<group>"; };
-		6507661318877648000C2993 /* arc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = arc.h; sourceTree = "<group>"; };
 		65076614188780FC000C2993 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		6507661618878109000C2993 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		6507661818878114000C2993 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		6507661A18878122000C2993 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		6507661C1887B5E8000C2993 /* Capture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Capture.h; sourceTree = "<group>"; };
 		6507661D1887B5E8000C2993 /* Capture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Capture.m; sourceTree = "<group>"; };
-		6507661F1887BF49000C2993 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 		650766201887DCD2000C2993 /* VideoDataCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDataCapture.h; sourceTree = "<group>"; };
 		650766211887DCD2000C2993 /* VideoDataCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDataCapture.m; sourceTree = "<group>"; };
 		656EE0DA1889139F001F3F50 /* Capture+Focus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Capture+Focus.m"; sourceTree = "<group>"; };
@@ -91,6 +91,14 @@
 		6590C5B418B32807008EF5FF /* AVCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCapture.m; sourceTree = "<group>"; };
 		6590C5B618B32AA3008EF5FF /* AVRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVRecorder.h; sourceTree = "<group>"; };
 		6590C5B718B32AA3008EF5FF /* AVRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVRecorder.m; sourceTree = "<group>"; };
+		65BA16B318B452A6002CD0AB /* AVAssetStitcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetStitcher.h; sourceTree = "<group>"; };
+		65BA16B418B452A6002CD0AB /* AVAssetStitcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetStitcher.m; sourceTree = "<group>"; };
+		65BA16B718B47B45002CD0AB /* AVSegmentRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVSegmentRecorder.h; sourceTree = "<group>"; };
+		65BA16B818B47B45002CD0AB /* AVSegmentRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVSegmentRecorder.m; sourceTree = "<group>"; };
+		65BA16BA18B5D15F002CD0AB /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = utils.h; path = marco/utils.h; sourceTree = "<group>"; };
+		65BA16BE18B5D27F002CD0AB /* miscTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miscTime.h; path = misc/miscTime.h; sourceTree = "<group>"; };
+		65BA16BF18B5D332002CD0AB /* arc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = arc.h; path = marco/arc.h; sourceTree = "<group>"; };
+		65BA16C018B5D332002CD0AB /* log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = log.h; path = marco/log.h; sourceTree = "<group>"; };
 		65BE73031889526700E02A9F /* StillImageCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StillImageCapture.h; sourceTree = "<group>"; };
 		65BE73041889526700E02A9F /* StillImageCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StillImageCapture.m; sourceTree = "<group>"; };
 		65BE730618895C0E00E02A9F /* AudioDataCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioDataCapture.h; sourceTree = "<group>"; };
@@ -170,6 +178,9 @@
 		650765D8188775C8000C2993 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				65BA16BD18B5D244002CD0AB /* misc */,
+				65BA16BC18B5D236002CD0AB /* utils */,
+				65BA16BB18B5D166002CD0AB /* marco */,
 				6507660A188775FF000C2993 /* camera */,
 				650765E1188775C8000C2993 /* AppDelegate.h */,
 				650765E2188775C8000C2993 /* AppDelegate.m */,
@@ -180,10 +191,6 @@
 				650765EB188775C8000C2993 /* SecondViewController.m */,
 				650765ED188775C8000C2993 /* Images.xcassets */,
 				650765D9188775C8000C2993 /* Supporting Files */,
-				6507661318877648000C2993 /* arc.h */,
-				6507661F1887BF49000C2993 /* log.h */,
-				65D3C989189650C500E17C9C /* UIImage+PixelBuffer.h */,
-				65D3C98A189650C500E17C9C /* UIImage+PixelBuffer.m */,
 			);
 			path = video;
 			sourceTree = "<group>";
@@ -220,6 +227,8 @@
 		6507660A188775FF000C2993 /* camera */ = {
 			isa = PBXGroup;
 			children = (
+				65BA16B318B452A6002CD0AB /* AVAssetStitcher.h */,
+				65BA16B418B452A6002CD0AB /* AVAssetStitcher.m */,
 				6507661C1887B5E8000C2993 /* Capture.h */,
 				656EE0DA1889139F001F3F50 /* Capture+Focus.m */,
 				656EE0DD18891423001F3F50 /* Capture+Torch.m */,
@@ -242,8 +251,37 @@
 				6590C5B418B32807008EF5FF /* AVCapture.m */,
 				6590C5B618B32AA3008EF5FF /* AVRecorder.h */,
 				6590C5B718B32AA3008EF5FF /* AVRecorder.m */,
+				65BA16B718B47B45002CD0AB /* AVSegmentRecorder.h */,
+				65BA16B818B47B45002CD0AB /* AVSegmentRecorder.m */,
 			);
 			path = camera;
+			sourceTree = "<group>";
+		};
+		65BA16BB18B5D166002CD0AB /* marco */ = {
+			isa = PBXGroup;
+			children = (
+				65BA16BF18B5D332002CD0AB /* arc.h */,
+				65BA16C018B5D332002CD0AB /* log.h */,
+				65BA16BA18B5D15F002CD0AB /* utils.h */,
+			);
+			name = marco;
+			sourceTree = "<group>";
+		};
+		65BA16BC18B5D236002CD0AB /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				65D3C98A189650C500E17C9C /* UIImage+PixelBuffer.m */,
+				65D3C989189650C500E17C9C /* UIImage+PixelBuffer.h */,
+			);
+			name = utils;
+			sourceTree = "<group>";
+		};
+		65BA16BD18B5D244002CD0AB /* misc */ = {
+			isa = PBXGroup;
+			children = (
+				65BA16BE18B5D27F002CD0AB /* miscTime.h */,
+			);
+			name = misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				650766221887DCD2000C2993 /* VideoDataCapture.m in Sources */,
+				65BA16B518B452A6002CD0AB /* AVAssetStitcher.m in Sources */,
 				65D3C98E189658ED00E17C9C /* ImagesToMovieEncoder.m in Sources */,
 				650765EC188775C8000C2993 /* SecondViewController.m in Sources */,
 				65BE73051889526700E02A9F /* StillImageCapture.m in Sources */,
@@ -357,6 +396,7 @@
 				65BE730818895C0E00E02A9F /* AudioDataCapture.m in Sources */,
 				656EE0DE18891423001F3F50 /* Capture+Torch.m in Sources */,
 				6590C5B518B32807008EF5FF /* AVCapture.m in Sources */,
+				65BA16B918B47B45002CD0AB /* AVSegmentRecorder.m in Sources */,
 				65BE7311188F5F8300E02A9F /* MovieEncoder.m in Sources */,
 				656EE0DB1889139F001F3F50 /* Capture+Focus.m in Sources */,
 				650765DF188775C8000C2993 /* main.m in Sources */,

@@ -15,4 +15,13 @@
     #import <Foundation/Foundation.h>
     #import "arc.h"
     #import "log.h"
+
 #endif
+
+
+//#ifdef __cplusplus__
+
+    #import "miscTime.h"
+
+
+//#endif
