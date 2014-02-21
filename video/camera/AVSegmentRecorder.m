@@ -17,6 +17,7 @@
 @interface AVSegmentRecorder (){
     long uniqueTimestamp;
     int currentRecordingSegment;
+    CGFloat _totalDuration;
 }
 
 @property(nonatomic,strong)NSMutableArray* tempFiles;
@@ -33,6 +34,7 @@
         self.filePath = [AVRecorder genFilePath];
         self.tempFiles = [NSMutableArray new];
         _inFlightWrites = 0;
+        _totalDuration = 0.0f;
     }
     return self;
 }
@@ -43,6 +45,7 @@
         
         self.tempFiles = [NSMutableArray new];
         _inFlightWrites = 0;
+        _totalDuration = 0.0f;
     }
     
     return self;
@@ -54,9 +57,19 @@
 
 
 - (void) deletePrev{
-    unlink([self.filePath UTF8String]);
-    [self.tempFiles removeLastObject];
+    if(!_stop || !self.pause){
+        [self _stopRecord];
+    }
+
+    AVURLAsset * asset = [AVURLAsset URLAssetWithURL:[NSURL fileURLWithPath:[self.tempFiles lastObject]] options:nil];
+    _totalDuration -= CMTimeGetSeconds(asset.duration);
     
+    if(_totalDuration < 0.01f){
+        _totalDuration = 0.0f;
+    }
+    
+    unlink([[self.tempFiles lastObject] UTF8String]);
+    [self.tempFiles removeLastObject];
 }
 
 - (void) _startRecord{
@@ -66,6 +79,8 @@
     MovieEncoder* encoder = [[MovieEncoder alloc]initWithPath:[self genTempFilePath] statusChangeBlock:^(MovieEncoder*encoder, MovieEncoderStatus status){
         switch (status) {
             case MovieEncoderStatusStop:
+            {
+                _totalDuration += [encoder duration];
                 --_inFlightWrites;
                 [wself.tempFiles addObject:[NSURL fileURLWithPath:[encoder path]]];
                 if(wself.encoder == encoder){
@@ -75,6 +90,7 @@
                 if(_stop){
                     [wself mergeToOutputFilePath];
                 }
+            }
                 break;
                 
             default:
@@ -140,33 +156,36 @@
 
 - (void) mergeToOutputFilePath{
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"start merge");
-        CGSize vSize =  CGSizeMake(self.width, self.height);
-        [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPreset640x480 withCompletionHandler:^(NSError *error) {
-            
-            if(!error){
-                [self cleanTemporaryFiles];
-                [self.tempFiles removeAllObjects];
-            }
-            
-            NSLog(@"error:%@",error);
-            NSLog(@"end merge");
-            
-        }];
-    });
-//    NSOperationQueue * queue = [[NSOperationQueue alloc]init];
-//    [queue addOperationWithBlock:^{
-//        
+//    dispatch_async(dispatch_get_main_queue(), ^{
 //        NSLog(@"start merge");
 //        CGSize vSize =  CGSizeMake(self.width, self.height);
-//        [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPresetMediumQuality withCompletionHandler:^(NSError *error) {
+//        [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPreset640x480 withCompletionHandler:^(NSError *error) {
+//            
+//            if(!error){
+//                [self cleanTemporaryFiles];
+//                [self.tempFiles removeAllObjects];
+//            }
 //            
 //            NSLog(@"error:%@",error);
 //            NSLog(@"end merge");
 //            
 //        }];
-//    }];
+//    });
+    NSOperationQueue * queue = [[NSOperationQueue alloc]init];
+    [queue addOperationWithBlock:^{
+        
+        NSLog(@"start merge");
+        CGSize vSize =  CGSizeMake(self.width, self.height);
+        [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPresetMediumQuality withCompletionHandler:^(NSError *error) {
+            if(!error){
+                [self cleanTemporaryFiles];
+                [self.tempFiles removeAllObjects];
+            }
+            NSLog(@"error:%@",error);
+            NSLog(@"end merge");
+            
+        }];
+    }];
 }
 
 - (void)finalizeRecordingToFile:(NSURL *)finalVideoLocationURL withVideoSize:(CGSize)videoSize withPreset:(NSString *)preset withCompletionHandler:(void (^)(NSError *error))completionHandler{
@@ -247,8 +266,12 @@
     
 }
 
-
-
+- (CGFloat)duration{
+    if(self.encoder){
+        return  _totalDuration + [self.encoder duration];
+    }
+    return _totalDuration;
+}
 
 
 @end
