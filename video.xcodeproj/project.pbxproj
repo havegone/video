@@ -33,6 +33,9 @@
 		656EE0E218891C7B001F3F50 /* MovieFileCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0E118891C7B001F3F50 /* MovieFileCapture.m */; };
 		6590C5B518B32807008EF5FF /* AVCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 6590C5B418B32807008EF5FF /* AVCapture.m */; };
 		6590C5B818B32AA3008EF5FF /* AVRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6590C5B718B32AA3008EF5FF /* AVRecorder.m */; };
+		65A0F2CC18BAF6A100D29679 /* PlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65A0F2CA18BAF6A100D29679 /* PlayerViewController.m */; };
+		65A0F2CD18BAF6A100D29679 /* PlayerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 65A0F2CB18BAF6A100D29679 /* PlayerViewController.xib */; };
+		65A0F2D118BC399E00D29679 /* UIImage+AVAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 65A0F2D018BC399E00D29679 /* UIImage+AVAsset.m */; };
 		65BA16B518B452A6002CD0AB /* AVAssetStitcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA16B418B452A6002CD0AB /* AVAssetStitcher.m */; };
 		65BA16B918B47B45002CD0AB /* AVSegmentRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BA16B818B47B45002CD0AB /* AVSegmentRecorder.m */; };
 		65BE73051889526700E02A9F /* StillImageCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 65BE73041889526700E02A9F /* StillImageCapture.m */; };
@@ -91,6 +94,11 @@
 		6590C5B418B32807008EF5FF /* AVCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCapture.m; sourceTree = "<group>"; };
 		6590C5B618B32AA3008EF5FF /* AVRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVRecorder.h; sourceTree = "<group>"; };
 		6590C5B718B32AA3008EF5FF /* AVRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVRecorder.m; sourceTree = "<group>"; };
+		65A0F2C918BAF6A100D29679 /* PlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerViewController.h; sourceTree = "<group>"; };
+		65A0F2CA18BAF6A100D29679 /* PlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlayerViewController.m; sourceTree = "<group>"; };
+		65A0F2CB18BAF6A100D29679 /* PlayerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlayerViewController.xib; sourceTree = "<group>"; };
+		65A0F2CF18BC399E00D29679 /* UIImage+AVAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+AVAsset.h"; path = "utils/UIImage+AVAsset.h"; sourceTree = "<group>"; };
+		65A0F2D018BC399E00D29679 /* UIImage+AVAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+AVAsset.m"; path = "utils/UIImage+AVAsset.m"; sourceTree = "<group>"; };
 		65BA16B318B452A6002CD0AB /* AVAssetStitcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVAssetStitcher.h; sourceTree = "<group>"; };
 		65BA16B418B452A6002CD0AB /* AVAssetStitcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVAssetStitcher.m; sourceTree = "<group>"; };
 		65BA16B718B47B45002CD0AB /* AVSegmentRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVSegmentRecorder.h; sourceTree = "<group>"; };
@@ -178,6 +186,7 @@
 		650765D8188775C8000C2993 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				65A0F2CE18BAF6AE00D29679 /* classes */,
 				65BA16BD18B5D244002CD0AB /* misc */,
 				65BA16BC18B5D236002CD0AB /* utils */,
 				65BA16BB18B5D166002CD0AB /* marco */,
@@ -185,10 +194,6 @@
 				650765E1188775C8000C2993 /* AppDelegate.h */,
 				650765E2188775C8000C2993 /* AppDelegate.m */,
 				650765E4188775C8000C2993 /* Main.storyboard */,
-				650765E7188775C8000C2993 /* FirstViewController.h */,
-				650765E8188775C8000C2993 /* FirstViewController.m */,
-				650765EA188775C8000C2993 /* SecondViewController.h */,
-				650765EB188775C8000C2993 /* SecondViewController.m */,
 				650765ED188775C8000C2993 /* Images.xcassets */,
 				650765D9188775C8000C2993 /* Supporting Files */,
 			);
@@ -257,6 +262,20 @@
 			path = camera;
 			sourceTree = "<group>";
 		};
+		65A0F2CE18BAF6AE00D29679 /* classes */ = {
+			isa = PBXGroup;
+			children = (
+				650765E7188775C8000C2993 /* FirstViewController.h */,
+				650765E8188775C8000C2993 /* FirstViewController.m */,
+				650765EA188775C8000C2993 /* SecondViewController.h */,
+				650765EB188775C8000C2993 /* SecondViewController.m */,
+				65A0F2C918BAF6A100D29679 /* PlayerViewController.h */,
+				65A0F2CA18BAF6A100D29679 /* PlayerViewController.m */,
+				65A0F2CB18BAF6A100D29679 /* PlayerViewController.xib */,
+			);
+			name = classes;
+			sourceTree = "<group>";
+		};
 		65BA16BB18B5D166002CD0AB /* marco */ = {
 			isa = PBXGroup;
 			children = (
@@ -272,6 +291,8 @@
 			children = (
 				65D3C98A189650C500E17C9C /* UIImage+PixelBuffer.m */,
 				65D3C989189650C500E17C9C /* UIImage+PixelBuffer.h */,
+				65A0F2CF18BC399E00D29679 /* UIImage+AVAsset.h */,
+				65A0F2D018BC399E00D29679 /* UIImage+AVAsset.m */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -361,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				650765EE188775C8000C2993 /* Images.xcassets in Resources */,
+				65A0F2CD18BAF6A100D29679 /* PlayerViewController.xib in Resources */,
 				650765DD188775C8000C2993 /* InfoPlist.strings in Resources */,
 				650765E6188775C8000C2993 /* Main.storyboard in Resources */,
 			);
@@ -390,7 +412,9 @@
 				656EE0E218891C7B001F3F50 /* MovieFileCapture.m in Sources */,
 				65BE730E188E594700E02A9F /* MovieSampleFragment.m in Sources */,
 				650765E9188775C8000C2993 /* FirstViewController.m in Sources */,
+				65A0F2CC18BAF6A100D29679 /* PlayerViewController.m in Sources */,
 				6590C5B818B32AA3008EF5FF /* AVRecorder.m in Sources */,
+				65A0F2D118BC399E00D29679 /* UIImage+AVAsset.m in Sources */,
 				65D3C98B189650C500E17C9C /* UIImage+PixelBuffer.m in Sources */,
 				6507661E1887B5E8000C2993 /* Capture.m in Sources */,
 				65BE730818895C0E00E02A9F /* AudioDataCapture.m in Sources */,

@@ -8,6 +8,21 @@
 
 #import "AVCapture.h"
 
+
+typedef enum _RecorderStatus{
+    RecorderStatusUnknown = 0,
+    RecorderStatusDidStart,
+    RecorderStatusDidPause,
+    RecorderStatusDidResume,
+    RecorderStatusDidStop,
+    RecorderStatusFailed
+}RecorderStatus;
+
+typedef void(^RecorderStatusBlock)(RecorderStatus status);
+
+
+
+
 @class MovieEncoder;
 
 @interface AVRecorder : AVCapture
@@ -37,6 +52,10 @@
 @property(nonatomic,strong)MovieEncoder *encoder;
 
 @property(nonatomic,readonly) BOOL pause;
+
+@property(nonatomic,copy)RecorderStatusBlock statusBlock;
+
+@property(nonatomic)RecorderStatus status;
 
 - (instancetype)initWithParentView:(UIView *)parent andEncoder:(MovieEncoder*)encoder;
 

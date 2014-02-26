@@ -156,9 +156,15 @@
 }
 
 
-- (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo
-{
-   return [self appendSampleBuffer:sampleBuffer toInput:isVideo?self.videoWriterInput:self.audioWriterInput];
+- (BOOL) encodeFrame:(CMSampleBufferRef) sampleBuffer isVideo:(BOOL)isVideo{
+    if(_startTimeStamp.value>0)
+        return [self appendSampleBuffer:sampleBuffer toInput:isVideo?self.videoWriterInput:self.audioWriterInput];
+    else{
+        if(isVideo)
+            return [self appendSampleBuffer:sampleBuffer toInput:isVideo?self.videoWriterInput:self.audioWriterInput];
+        else
+            return NO;
+    }
 }
 
 

@@ -111,6 +111,7 @@
     uniqueTimestamp = [[NSDate date] timeIntervalSince1970];
     currentRecordingSegment = 0;
     [self _startRecord];
+     self.statusBlock(RecorderStatusDidStart);
     
 }
 
@@ -131,6 +132,7 @@
     if (!self.pause) {
         [self _stopRecord];
         self.pause = YES;
+        self.statusBlock(RecorderStatusDidPause);
     }
 
 }
@@ -139,6 +141,8 @@
         currentRecordingSegment++;
         [self _startRecord];
         self.pause = NO;
+        self.statusBlock(RecorderStatusDidResume);
+
     }
 }
 
@@ -162,11 +166,15 @@
         CGSize vSize =  CGSizeMake(self.width, self.height);
         [self finalizeRecordingToFile:[NSURL fileURLWithPath:self.filePath] withVideoSize:vSize withPreset:AVAssetExportPresetMediumQuality withCompletionHandler:^(NSError *error) {
             if(!error){
-                [self cleanTemporaryFiles];
+//                [self cleanTemporaryFiles];
                 [self.tempFiles removeAllObjects];
             }
             NSLog(@"error:%@",error);
             NSLog(@"end merge");
+        
+            if(self.statusBlock){
+                self.statusBlock(RecorderStatusDidStop);
+            }
             
         }];
     }];

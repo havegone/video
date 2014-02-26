@@ -14,6 +14,7 @@
 @property(nonatomic,strong)NSDictionary *videoSettings;
 @property(nonatomic,strong)NSDictionary *audioSettings;
 @property(nonatomic) BOOL pause;
+@property(nonatomic,copy)MovieEncoderStatusChangeBlock encoderBlock;
 @end
 
 
@@ -31,9 +32,46 @@
 - (instancetype)initWithParentView:(UIView *)parent andEncoder:(MovieEncoder*)encoder{
     if(self = [super initWithParentView:parent]){
         self.encoder = encoder;
+        [self hookEncoderBlock:encoder];
         self.pause = NO;
     }
     return self;
+}
+
+- (void) hookEncoderBlock:(MovieEncoder*)encoder{
+    self.encoderBlock = encoder.statusChangeBlock;
+    encoder.statusChangeBlock =  ^(MovieEncoder* encoder,MovieEncoderStatus status){
+        self.encoderBlock(encoder,status);
+        
+        RecorderStatus rStatus = RecorderStatusUnknown;
+        
+        switch (status) {
+            case    MovieEncoderStatusUnknown :
+                rStatus = RecorderStatusUnknown;
+                break;
+            case    MovieEncoderStatusStart:
+                rStatus = RecorderStatusDidStart;
+                break;
+            case    MovieEncoderStatusStop :
+                rStatus = RecorderStatusDidStop;
+                break;
+            case    MovieEncoderStatusPause :
+                rStatus = RecorderStatusDidPause;
+                break;
+            case    MovieEncoderStatusResume :
+                rStatus = RecorderStatusDidResume;
+                break;
+                
+            default:
+                break;
+        }
+        self.status = rStatus;
+        if(self.statusBlock){
+            self.statusBlock(rStatus);
+        }
+    };
+    
+
 }
 
 - (void) setDefaultValues{
@@ -127,8 +165,8 @@
         [self.encoder resume];
         self.pause = NO;
     }
-
 }
+
 + (NSString *)stringFromDate:(NSDate *)date{
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

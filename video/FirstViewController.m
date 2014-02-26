@@ -12,6 +12,7 @@
 #import "MovieEncoder.h"
 #import "AVRecorder.h"
 #import "AVSegmentRecorder.h"
+#import "PlayerViewController.h"
 
 UIImageView * g_imageView;
 
@@ -80,6 +81,12 @@ UIImageView * g_imageView;
     
     self.recorder = [[AVSegmentRecorder alloc]initWithParentView:self.view andFilePath:self.filePath];
     [self.recorder buildSession];
+    self.recorder.statusBlock = ^(RecorderStatus status){
+        
+        if(status == RecorderStatusDidStop){
+            [self gotoNext];
+        }
+    };
 
     //self.camera.useAVCaptureVideoPreviewLayer = NO;
     
@@ -156,7 +163,9 @@ UIImageView * g_imageView;
 //        [self.camera generateFilePath];
 //        [self.camera startRecord:nil];
         
-        self.recorder.filePath = [AVRecorder genFilePath];
+        self.filePath = [AVRecorder genFilePath];
+        
+        self.recorder.filePath = self.filePath;
         [self.recorder startRecord];
     }else{
         [recordBtn setTitle:@"start" forState:UIControlStateNormal];
@@ -261,6 +270,16 @@ UIImageView * g_imageView;
     CMTime duration = asset.duration;
     
     NSLog(@"duration:%f",CMTimeGetSeconds(duration));
+}
+
+- (void) gotoNext{
+    UIViewController* vc =  [[PlayerViewController alloc]initWithPath:self.filePath];
+    
+    UINavigationController* navController = [[UINavigationController alloc]initWithRootViewController:vc];
+    
+    [self presentViewController:navController animated:YES completion:^{
+        
+    }];
 }
 
 @end

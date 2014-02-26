@@ -8,7 +8,7 @@
 
 #import "AVRecorder.h"
 
-typedef void(^RecorderStatusBlock)(void);
+
 
 @interface AVSegmentRecorder:AVRecorder
 
