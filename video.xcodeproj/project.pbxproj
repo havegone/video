@@ -28,6 +28,8 @@
 		6507661B18878122000C2993 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6507661A18878122000C2993 /* AssetsLibrary.framework */; };
 		6507661E1887B5E8000C2993 /* Capture.m in Sources */ = {isa = PBXBuildFile; fileRef = 6507661D1887B5E8000C2993 /* Capture.m */; };
 		650766221887DCD2000C2993 /* VideoDataCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 650766211887DCD2000C2993 /* VideoDataCapture.m */; };
+		654A0B0618BF2A5C00512295 /* AVAsset+Audio.m in Sources */ = {isa = PBXBuildFile; fileRef = 654A0B0518BF2A5C00512295 /* AVAsset+Audio.m */; };
+		654A8E8218C030EF008B4430 /* test.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 654A8E7718C030EF008B4430 /* test.mp3 */; };
 		656EE0DB1889139F001F3F50 /* Capture+Focus.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DA1889139F001F3F50 /* Capture+Focus.m */; };
 		656EE0DE18891423001F3F50 /* Capture+Torch.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0DD18891423001F3F50 /* Capture+Torch.m */; };
 		656EE0E218891C7B001F3F50 /* MovieFileCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = 656EE0E118891C7B001F3F50 /* MovieFileCapture.m */; };
@@ -86,6 +88,9 @@
 		6507661D1887B5E8000C2993 /* Capture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Capture.m; sourceTree = "<group>"; };
 		650766201887DCD2000C2993 /* VideoDataCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDataCapture.h; sourceTree = "<group>"; };
 		650766211887DCD2000C2993 /* VideoDataCapture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDataCapture.m; sourceTree = "<group>"; };
+		654A0B0418BF2A5C00512295 /* AVAsset+Audio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AVAsset+Audio.h"; path = "utils/AVAsset+Audio.h"; sourceTree = "<group>"; };
+		654A0B0518BF2A5C00512295 /* AVAsset+Audio.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AVAsset+Audio.m"; path = "utils/AVAsset+Audio.m"; sourceTree = "<group>"; };
+		654A8E7718C030EF008B4430 /* test.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = test.mp3; sourceTree = "<group>"; };
 		656EE0DA1889139F001F3F50 /* Capture+Focus.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Capture+Focus.m"; sourceTree = "<group>"; };
 		656EE0DD18891423001F3F50 /* Capture+Torch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Capture+Torch.m"; sourceTree = "<group>"; };
 		656EE0E018891C7B001F3F50 /* MovieFileCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieFileCapture.h; sourceTree = "<group>"; };
@@ -186,6 +191,8 @@
 		650765D8188775C8000C2993 /* video */ = {
 			isa = PBXGroup;
 			children = (
+				654A8E7518C030EF008B4430 /* music */,
+				654A0B0318BF28E800512295 /* New Group */,
 				65A0F2CE18BAF6AE00D29679 /* classes */,
 				65BA16BD18B5D244002CD0AB /* misc */,
 				65BA16BC18B5D236002CD0AB /* utils */,
@@ -262,6 +269,21 @@
 			path = camera;
 			sourceTree = "<group>";
 		};
+		654A0B0318BF28E800512295 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
+		654A8E7518C030EF008B4430 /* music */ = {
+			isa = PBXGroup;
+			children = (
+				654A8E7718C030EF008B4430 /* test.mp3 */,
+			);
+			path = music;
+			sourceTree = "<group>";
+		};
 		65A0F2CE18BAF6AE00D29679 /* classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -293,6 +315,8 @@
 				65D3C989189650C500E17C9C /* UIImage+PixelBuffer.h */,
 				65A0F2CF18BC399E00D29679 /* UIImage+AVAsset.h */,
 				65A0F2D018BC399E00D29679 /* UIImage+AVAsset.m */,
+				654A0B0418BF2A5C00512295 /* AVAsset+Audio.h */,
+				654A0B0518BF2A5C00512295 /* AVAsset+Audio.m */,
 			);
 			name = utils;
 			sourceTree = "<group>";
@@ -382,6 +406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				650765EE188775C8000C2993 /* Images.xcassets in Resources */,
+				654A8E8218C030EF008B4430 /* test.mp3 in Resources */,
 				65A0F2CD18BAF6A100D29679 /* PlayerViewController.xib in Resources */,
 				650765DD188775C8000C2993 /* InfoPlist.strings in Resources */,
 				650765E6188775C8000C2993 /* Main.storyboard in Resources */,
@@ -405,6 +430,7 @@
 			files = (
 				650766221887DCD2000C2993 /* VideoDataCapture.m in Sources */,
 				65BA16B518B452A6002CD0AB /* AVAssetStitcher.m in Sources */,
+				654A0B0618BF2A5C00512295 /* AVAsset+Audio.m in Sources */,
 				65D3C98E189658ED00E17C9C /* ImagesToMovieEncoder.m in Sources */,
 				650765EC188775C8000C2993 /* SecondViewController.m in Sources */,
 				65BE73051889526700E02A9F /* StillImageCapture.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "PlayerViewController.h"
 #import "UIImage+AVAsset.h"
+#import "AVAsset+Audio.h"
 
 @interface PlayerViewController ()
 
@@ -153,6 +154,36 @@
     [self.navigationController dismissViewControllerAnimated:YES completion:^{
         
     }];
+}
+
+
+- (IBAction)mixMusic:(id)sender{
+    
+
+    NSURL* audioPath = [[NSBundle mainBundle] URLForResource:@"test" withExtension:@"mp3"];
+    
+    AVMutableAudioMix * mix = [AVMutableAudioMix audioMix];
+    AVMutableComposition* composition =  [AVAsset compositeAudio:audioPath andVideo:self.path volume:0.1 replaceOrgAudio:NO repeatAudio:NO audioMix:mix];
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
+    NSString *archives = documentsDirectoryPath;
+    //NSDate* currentTime = [NSDate date];
+    
+    NSString *outputpathofmovie = [[archives stringByAppendingPathComponent:@"export"] stringByAppendingString:@".mp4"];
+    
+
+    [AVAsset exportComposition:composition audioMix:mix toPath:outputpathofmovie withCompleteBlock:^(NSError*error){
+       
+        NSLog(@"export complete;%@",error);
+    }];
+    
+    
+    
+    
+
+    
+    
 }
 
 
