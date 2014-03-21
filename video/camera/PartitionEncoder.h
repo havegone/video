@@ -11,7 +11,6 @@
 @interface PartitionEncoder : MovieEncoder
 
 
-- (void)pause;
-- (void)resume;
+
 
 @end

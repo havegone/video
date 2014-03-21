@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "-[PlayerViewController observeValueForKeyPath:ofObject:change:context:]:PlayerViewController.m">
+         <PersistentStrings>
+            <PersistentString
+               value = "(AVPlayerItem*)0x14d99f30">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

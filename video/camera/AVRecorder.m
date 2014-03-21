@@ -87,7 +87,7 @@
     self.bitRate = 64000;
     self.sampleRate = 44100.0;
     self.channel = 1;
-    self.format = kAudioFormatMPEG4AAC;
+    self.format = kAudioFormatMPEG4AAC;//kAudioFormatLinearPCM;//kAudioFormatMPEG4AAC;
     
     [self _setAudioSettings];
     [self _setVideoSettings];
@@ -97,14 +97,29 @@
 
 - (void)_setAudioSettings{
     AudioChannelLayout acl;
-    bzero( &acl, sizeof(acl));
+    bzero( &acl, sizeof(acl));  
     acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
     
-    _audioSettings = @{AVFormatIDKey:@(self.format),
+    if(self.format == kAudioFormatLinearPCM){
+        _audioSettings = @{AVFormatIDKey:@(self.format),
+                           AVSampleRateKey:@(self.sampleRate),
+                           AVNumberOfChannelsKey:@(self.channel),
+                           AVLinearPCMBitDepthKey:@(16),
+                           AVLinearPCMIsFloatKey:@(0),
+                           AVLinearPCMIsNonInterleaved:@(0),
+                           AVLinearPCMIsBigEndianKey:@(NS_BigEndian == NSHostByteOrder()),
+                           AVChannelLayoutKey:[NSData dataWithBytes:&acl length: sizeof(acl)]};
+        
+    }else{
+        _audioSettings = @{AVFormatIDKey:@(self.format),
                                  AVEncoderBitRateKey:@(self.bitRate),
                                  AVSampleRateKey:@(self.sampleRate),
                                  AVNumberOfChannelsKey:@(self.channel),
                                  AVChannelLayoutKey:[NSData dataWithBytes:&acl length: sizeof(acl)]};
+    }
+    
+    
+    
     
 }
 
@@ -182,7 +197,7 @@
 + (NSString*)genFilePath{
     NSString * time = [self stringFromDate:[NSDate date]];
     NSString *betaCompressionDirectory = [NSHomeDirectory()stringByAppendingPathComponent:@"Documents"];
-    NSString* filePath = [betaCompressionDirectory stringByAppendingFormat:@"/%@.mp4",time];
+    NSString* filePath = [betaCompressionDirectory stringByAppendingFormat:@"/%@.mov",time];
     unlink([filePath UTF8String]);
     return filePath;
 }

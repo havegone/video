@@ -9,6 +9,17 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
+
+@protocol CaptureDelegate <NSObject>
+
+@optional
+
+- (void) captureVideoError:(NSError*)error;
+- (void) captureVideoDidStart;
+- (void) captureVideoDidStop;
+
+@end
+
 @class Capture;
 
 typedef NS_ENUM(NSInteger, CameraPresetGravity) {
@@ -20,6 +31,8 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 
 @interface Capture : NSObject
+
+@property (nonatomic,weak) id<CaptureDelegate>  delegate;
 
 @property (nonatomic,strong) AVCaptureSession       *captureSession;
 @property (nonatomic,strong) AVCaptureInput         *cameraInput;
@@ -48,6 +61,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 @property (nonatomic,readonly,getter = isTorchOn) BOOL torchOn;
 @property (nonatomic,readonly,getter = isFlashOn) BOOL flashOn;
+@property (nonatomic) CGFloat effectiveScale;
 
 
 
@@ -71,6 +85,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (AVCaptureDeviceInput*) createAudioInput;
 //exclude camera output
 - (NSArray*) createInputs;
+- (NSArray*) createOutputs;
 - (AVCaptureSession*) createSession;
 - (void) buildSession;
 
@@ -96,6 +111,9 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 - (void) unlockBalance;
 - (void) lockExposure;
 - (void) unlockExposure;
+- (BOOL) isSupportFocusRange;
+- (void) setFocusDistance:(CGFloat)distance;
+- (CGFloat) getMaxScaleAndCropFactor;
 
 @end
 
@@ -105,7 +123,7 @@ typedef NS_ENUM(NSInteger, CameraPresetGravity) {
 
 - (void) turnOnTorchAndFlash:(BOOL)on;
 - (BOOL) hasTorch;
-- (void) turnOnTorch:(BOOL)on;
+- (BOOL) turnOnTorch:(BOOL)on;
 - (BOOL) hasFlash;
 - (void) turnOnFlash:(BOOL)on;
 

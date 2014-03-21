@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B3FD924370F489CAC48079B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 038E6DBF065D4961A6CAC3D0 /* libPods.a */; };
+		6503F04618C57A7E004AEE3C /* sample_iPod.m4v in Resources */ = {isa = PBXBuildFile; fileRef = 6503F04518C578F7004AEE3C /* sample_iPod.m4v */; };
+		6503F04A18C5C36E004AEE3C /* TMGPUImageMovie.m in Sources */ = {isa = PBXBuildFile; fileRef = 6503F04918C5C36E004AEE3C /* TMGPUImageMovie.m */; };
 		650765D3188775C8000C2993 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650765D2188775C8000C2993 /* Foundation.framework */; };
 		650765D5188775C8000C2993 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650765D4188775C8000C2993 /* CoreGraphics.framework */; };
 		650765D7188775C8000C2993 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 650765D6188775C8000C2993 /* UIKit.framework */; };
@@ -59,6 +62,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		038E6DBF065D4961A6CAC3D0 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6503F04518C578F7004AEE3C /* sample_iPod.m4v */ = {isa = PBXFileReference; lastKnownFileType = file; path = sample_iPod.m4v; sourceTree = "<group>"; };
+		6503F04818C5C36E004AEE3C /* TMGPUImageMovie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TMGPUImageMovie.h; path = misc/TMGPUImageMovie.h; sourceTree = "<group>"; };
+		6503F04918C5C36E004AEE3C /* TMGPUImageMovie.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TMGPUImageMovie.m; path = misc/TMGPUImageMovie.m; sourceTree = "<group>"; };
 		650765CF188775C8000C2993 /* video.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = video.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		650765D2188775C8000C2993 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		650765D4188775C8000C2993 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -124,6 +131,7 @@
 		65D3C98A189650C500E17C9C /* UIImage+PixelBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+PixelBuffer.m"; path = "utils/UIImage+PixelBuffer.m"; sourceTree = "<group>"; };
 		65D3C98C189658ED00E17C9C /* ImagesToMovieEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesToMovieEncoder.h; sourceTree = "<group>"; };
 		65D3C98D189658ED00E17C9C /* ImagesToMovieEncoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesToMovieEncoder.m; sourceTree = "<group>"; };
+		99FAF417043A4291B49CB8A8 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +146,7 @@
 				650765D5188775C8000C2993 /* CoreGraphics.framework in Frameworks */,
 				650765D7188775C8000C2993 /* UIKit.framework in Frameworks */,
 				650765D3188775C8000C2993 /* Foundation.framework in Frameworks */,
+				3B3FD924370F489CAC48079B /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,6 +170,7 @@
 				650765FA188775C8000C2993 /* videoTests */,
 				650765D1188775C8000C2993 /* Frameworks */,
 				650765D0188775C8000C2993 /* Products */,
+				99FAF417043A4291B49CB8A8 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -184,6 +194,7 @@
 				650765D4188775C8000C2993 /* CoreGraphics.framework */,
 				650765D6188775C8000C2993 /* UIKit.framework */,
 				650765F4188775C8000C2993 /* XCTest.framework */,
+				038E6DBF065D4961A6CAC3D0 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -192,7 +203,6 @@
 			isa = PBXGroup;
 			children = (
 				654A8E7518C030EF008B4430 /* music */,
-				654A0B0318BF28E800512295 /* New Group */,
 				65A0F2CE18BAF6AE00D29679 /* classes */,
 				65BA16BD18B5D244002CD0AB /* misc */,
 				65BA16BC18B5D236002CD0AB /* utils */,
@@ -269,16 +279,10 @@
 			path = camera;
 			sourceTree = "<group>";
 		};
-		654A0B0318BF28E800512295 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "New Group";
-			sourceTree = "<group>";
-		};
 		654A8E7518C030EF008B4430 /* music */ = {
 			isa = PBXGroup;
 			children = (
+				6503F04518C578F7004AEE3C /* sample_iPod.m4v */,
 				654A8E7718C030EF008B4430 /* test.mp3 */,
 			);
 			path = music;
@@ -325,6 +329,8 @@
 			isa = PBXGroup;
 			children = (
 				65BA16BE18B5D27F002CD0AB /* miscTime.h */,
+				6503F04818C5C36E004AEE3C /* TMGPUImageMovie.h */,
+				6503F04918C5C36E004AEE3C /* TMGPUImageMovie.m */,
 			);
 			name = misc;
 			sourceTree = "<group>";
@@ -336,9 +342,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 65076604188775C8000C2993 /* Build configuration list for PBXNativeTarget "video" */;
 			buildPhases = (
+				B51AF3463ECD4184A0303A55 /* Check Pods Manifest.lock */,
 				650765CB188775C8000C2993 /* Sources */,
 				650765CC188775C8000C2993 /* Frameworks */,
 				650765CD188775C8000C2993 /* Resources */,
+				7C9752C4D6DC44D58D85C29B /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -408,6 +416,7 @@
 				650765EE188775C8000C2993 /* Images.xcassets in Resources */,
 				654A8E8218C030EF008B4430 /* test.mp3 in Resources */,
 				65A0F2CD18BAF6A100D29679 /* PlayerViewController.xib in Resources */,
+				6503F04618C57A7E004AEE3C /* sample_iPod.m4v in Resources */,
 				650765DD188775C8000C2993 /* InfoPlist.strings in Resources */,
 				650765E6188775C8000C2993 /* Main.storyboard in Resources */,
 			);
@@ -422,6 +431,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7C9752C4D6DC44D58D85C29B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B51AF3463ECD4184A0303A55 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		650765CB188775C8000C2993 /* Sources */ = {
@@ -447,6 +489,7 @@
 				656EE0DE18891423001F3F50 /* Capture+Torch.m in Sources */,
 				6590C5B518B32807008EF5FF /* AVCapture.m in Sources */,
 				65BA16B918B47B45002CD0AB /* AVSegmentRecorder.m in Sources */,
+				6503F04A18C5C36E004AEE3C /* TMGPUImageMovie.m in Sources */,
 				65BE7311188F5F8300E02A9F /* MovieEncoder.m in Sources */,
 				656EE0DB1889139F001F3F50 /* Capture+Focus.m in Sources */,
 				650765DF188775C8000C2993 /* main.m in Sources */,
@@ -573,6 +616,7 @@
 		};
 		65076605188775C8000C2993 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 99FAF417043A4291B49CB8A8 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -586,6 +630,7 @@
 		};
 		65076606188775C8000C2993 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 99FAF417043A4291B49CB8A8 /* Pods.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

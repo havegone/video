@@ -9,18 +9,32 @@
 #import "PlayerViewController.h"
 #import "UIImage+AVAsset.h"
 #import "AVAsset+Audio.h"
+#import "TMGPUImageMovie.h"
+#import <GPUImage.h>
+//#import <AVFoundation/AVFoundation.h>
+//#import <AssetsLibrary/AssetsLibrary.h>
+//#import <MobileCoreServices/MobileCoreServices.h>
+#import <MobileCoreServices/UTCoreTypes.h>
 
-@interface PlayerViewController ()
+@interface PlayerViewController ()<GPUImageMovieDelegate>{
+    GPUImageMovie *movieFile;
+    GPUImageOutput<GPUImageInput> *filter;
+    GPUImageMovieWriter *movieWriter;
+}
 
 
 @property (strong, nonatomic) IBOutlet UIImageView *videoImage;
 @property (strong,nonatomic) UIImage* previewImage;
+@property (strong,nonatomic)GPUImageView* gpuView;
 
 @property(nonatomic) NSURL* path;
 
 @end
 
-@implementation PlayerViewController
+@implementation PlayerViewController{
+    GPUImageMovieWriter * _writer;
+    GPUImageMovie* gpuImageInput;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -36,6 +50,11 @@
     [super viewDidLoad];
     self.previewImage = [UIImage imageFromVideoURL:self.path];
     [self.videoImage setImage:self.previewImage];
+    
+    self.gpuView = [[GPUImageView alloc]initWithFrame:CGRectMake(0, 20, 200, 200)];
+    [self.view addSubview:self.gpuView];
+    
+    self.navigationController.navigationBarHidden = YES;
 }
 
 - (void)didReceiveMemoryWarning
@@ -75,6 +94,8 @@
 //    [self.player setVolume:volume];
 //}
 - (IBAction)play:(id)sender {
+    [self setupGPUImageFileter];
+    return;
     
     AVPlayerItem * playItem =  [AVPlayerItem playerItemWithURL:self.path];
     self.player = [[AVPlayer alloc]initWithPlayerItem:playItem];
@@ -179,11 +200,184 @@
     }];
     
     
+}
+
+#pragma mark -
+#pragma mark gpu image
+
+- (void)setupGPUImageFileter{
     
+    [self xxxd];
+    return;
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
+    NSString *archives = documentsDirectoryPath;
+    //NSDate* currentTime = [NSDate date];
+    
+    NSString *outputpathofmovie = [[archives stringByAppendingPathComponent:@"writer"] stringByAppendingString:@".mp4"];
+    CGSize size = CGSizeMake(640, 480);
+    
+    unlink([outputpathofmovie UTF8String]);
+    NSURL* pathURL = [NSURL fileURLWithPath:outputpathofmovie];
+    
+    
+    NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+    
+    NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
+    self.path =sampleURL;
+    
+    NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
+    NSMutableDictionary * compressionProperties = [[NSMutableDictionary alloc] init];
+    [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
+    [outputSettings setObject:[NSNumber numberWithInt:size.width] forKey:AVVideoWidthKey];
+    [outputSettings setObject:[NSNumber numberWithInt:size.height] forKey:AVVideoHeightKey];
+    [compressionProperties setObject:[NSNumber numberWithInt:256*1024.0]
+                              forKey:AVVideoAverageBitRateKey];
+    [compressionProperties setObject:[NSNumber numberWithInt: 24]
+                              forKey:AVVideoMaxKeyFrameIntervalKey];
+    
+    [outputSettings setObject:compressionProperties forKey:AVVideoCompressionPropertiesKey];
+    
+    
+    AudioChannelLayout channelLayout;
+    memset(&channelLayout, 0, sizeof(AudioChannelLayout));
+    channelLayout.mChannelLayoutTag = kAudioChannelLayoutTag_Stereo;
+    
+    NSDictionary *audioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                   [ NSNumber numberWithInt: kAudioFormatMPEG4AAC], AVFormatIDKey,
+                                   [ NSNumber numberWithInt: 2 ], AVNumberOfChannelsKey,
+                                   [ NSNumber numberWithFloat: 16000.0 ], AVSampleRateKey,
+                                   [ NSData dataWithBytes:&channelLayout length: sizeof( AudioChannelLayout ) ], AVChannelLayoutKey,
+                                   [ NSNumber numberWithInt: 32000 ], AVEncoderBitRateKey,
+                                   nil];
+    
+    
+    //_writer = [[GPUImageMovieWriter alloc] initWithMovieURL:pathURL size:size fileType:AVFileTypeMPEG4 outputSettings:outputSettings];
+//               outputSettings];
+    _writer = [[GPUImageMovieWriter alloc] initWithMovieURL:pathURL size:CGSizeMake(640.0, 480.0)];
+    _writer.encodingLiveVideo = YES;
+    _writer.shouldPassthroughAudio = NO;
+    [_writer setHasAudioTrack:TRUE audioSettings:audioSettings];
+    
+    gpuImageInput = [[TMGPUImageMovie alloc]initWithURL:self.path];
+    GPUImageView* outputView = self.gpuView;
+//    GPUImageMovieWriter* writer = nil;
+    GPUImageFilter * filter  = [[GPUImagePixellateFilter alloc]init];//
+    //[[GPUImagePixellateFilter alloc] init];// [[GPUImageSoftEleganceFilter alloc]init];
     
 
     
+//    GPUImageFalseColorFilter *filter2 = [[GPUImageFalseColorFilter alloc] init];
+//  
+//    //GPUImageView *filteredVideoView = [[GPUImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, viewWidth, viewHeight)];
+//    
+//    GPUImageFilterPipeline *pipeline = [[GPUImageFilterPipeline alloc]initWithOrderedFilters:@[filter] input:gpuImageInput output:outputView];
     
+    
+    [gpuImageInput addTarget:filter];
+    [filter addTarget:outputView];
+    [filter addTarget:_writer];
+    
+
+    [gpuImageInput enableSynchronizedEncodingUsingMovieWriter:_writer];
+    
+    gpuImageInput.audioEncodingTarget = _writer;
+//    gpuImageInput.delegate = self;
+    gpuImageInput.playAtActualSpeed = YES;
+//    gpuImageInput.runBenchmark = YES;
+    [_writer startRecording];
+    [gpuImageInput startProcessing];
+    
+    
+    __block __weak GPUImageMovieWriter *ww = _writer;
+    [_writer setCompletionBlock:^{
+  //      [_writer finishRecording];
+        [ww finishRecordingWithCompletionHandler:^{
+            
+            NSLog(@"finishRecordingWithCompletionHandler");
+//            if (block) {
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    block(ww.assetWriter.outputURL, nil);
+//                });
+//            }
+        }];
+    }];
+    [_writer setFailureBlock:^(NSError *error) {
+        
+        NSLog(@"setFailureBlock");
+//        if (block) {
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                block(nil, error);
+//            });
+//        }
+    }];
+
+    
+
+}
+- (void)xxxd{
+    CGSize size = CGSizeMake(640, 480);
+    NSMutableDictionary *outputSettings = [NSMutableDictionary dictionary];
+    NSMutableDictionary * compressionProperties = [[NSMutableDictionary alloc] init];
+    [outputSettings setObject:AVVideoCodecH264 forKey:AVVideoCodecKey];
+    [outputSettings setObject:[NSNumber numberWithInt:size.width] forKey:AVVideoWidthKey];
+    [outputSettings setObject:[NSNumber numberWithInt:size.height] forKey:AVVideoHeightKey];
+    [compressionProperties setObject:[NSNumber numberWithInt:256*1024.0]
+                              forKey:AVVideoAverageBitRateKey];
+    [compressionProperties setObject:[NSNumber numberWithInt: 24]
+                              forKey:AVVideoMaxKeyFrameIntervalKey];
+    
+    [outputSettings setObject:compressionProperties forKey:AVVideoCompressionPropertiesKey];
+    
+    NSURL *sampleURL = [[NSBundle mainBundle] URLForResource:@"sample_iPod" withExtension:@"m4v"];
+    sampleURL = self.path;
+    movieFile = [[TMGPUImageMovie alloc] initWithURL:sampleURL];
+    movieFile.runBenchmark = NO;
+    movieFile.playAtActualSpeed = NO;
+    filter =  [[GPUImagePixellateFilter alloc] init];
+    //    filter = [[GPUImageUnsharpMaskFilter alloc] init];
+    
+    [movieFile addTarget:filter];
+    
+    // Only rotate the video for display, leave orientation the same for recording
+    GPUImageView *filterView = self.gpuView;//(GPUImageView *)self.view;
+    [filter addTarget:filterView];
+    
+    // In addition to displaying to the screen, write out a processed version of the movie to disk
+    NSString *pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.mp4"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL *movieURL = [NSURL fileURLWithPath:pathToMovie];
+    
+    movieWriter = [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(640.0, 480.0)];
+    //movieWriter =    [[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:size fileType:AVFileTypeMPEG4 outputSettings:outputSettings];
+    
+    [filter addTarget:movieWriter];
+    
+    // Configure this for video from the movie file, where we want to preserve all video frames and audio samples
+    movieWriter.shouldPassthroughAudio = NO;
+    movieWriter.encodingLiveVideo = NO;
+    movieFile.audioEncodingTarget = movieWriter;
+    [movieFile enableSynchronizedEncodingUsingMovieWriter:movieWriter];
+    
+    [movieWriter startRecording];
+    [movieFile startProcessing];
+    
+    [movieWriter setCompletionBlock:^{
+        [filter removeTarget:movieWriter];
+        [movieWriter finishRecording];
+        
+        NSLog(@"complete");
+    }];
+}
+
+- (void)didCompletePlayingMovie{
+    gpuImageInput.delegate = nil;
+    [_writer finishRecording];
+    //gpuImageInput = nil;
+    NSLog(@"didCompletePlayingMovie");
 }
 
 

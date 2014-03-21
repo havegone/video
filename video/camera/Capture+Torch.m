@@ -8,8 +8,8 @@
 
 #import "Capture.h"
 @interface Capture ()
-@property (readwrite) BOOL torchOn;
-@property (readwrite) BOOL flashOn;
+@property (readwrite,assign) BOOL torchOn;
+@property (readwrite,assign) BOOL flashOn;
 @end
 
 @implementation Capture(Torch)
@@ -43,7 +43,7 @@
 }
 
 
-- (void) turnOnTorch:(BOOL)on{
+- (BOOL) turnOnTorch:(BOOL)on{
     AVCaptureDevice* device = self.cameraDevice;
     if ([device hasTorch] && [device isTorchAvailable]){
         
@@ -57,6 +57,8 @@
         }
         [device unlockForConfiguration];
     }
+    
+    return self.torchOn;
     
 }
 - (BOOL) hasFlash{
@@ -78,11 +80,14 @@
     }
 }
 
-- (BOOL) isTorchOn{
-    return self.torchOn;
-}
-- (BOOL) isFlashOn{
-    return self.flashOn;
-}
+//- (BOOL) isTorchOn{
+//    
+//    return _torchOn;
+////    return torchOn;
+//}
+//- (BOOL) isFlashOn{
+//    return self.flashOn;
+////    return flashOn;
+//}
 
 @end

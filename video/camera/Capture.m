@@ -66,6 +66,7 @@
     
     self.parentView = nil;
     self.useAVCaptureVideoPreviewLayer = NO;
+    self.effectiveScale = 1.0;
     
     
     _sessionBuilt = NO;
@@ -95,6 +96,7 @@
 
 - (void)dealloc;
 {
+    [self deallocSession];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
@@ -114,7 +116,8 @@
     if (self.parentView != nil) {
         self.previewLayer.frame = self.parentView.bounds;
         self.previewLayer.videoGravity = [self getPresentGravity];
-        [self.parentView.layer addSublayer:self.previewLayer];
+        [self.parentView.layer insertSublayer:self.previewLayer atIndex:0];
+//        [self.parentView.layer addSublayer:self.previewLayer];
     }
     NSLog(@"[Camera] created AVCaptureVideoPreviewLayer");
 }
@@ -157,6 +160,9 @@
 //                format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
     return nil;
 }
+- (NSArray*) createOutputs{
+    return nil;
+}
 - (AVCaptureSession*) createSession{
     
     AVCaptureSession *session = [[AVCaptureSession alloc]init];
@@ -186,29 +192,22 @@
 
 - (void) buildSession{
     
-    AVCaptureDeviceInput* camerainput = [self createCameraInput];
+    AVCaptureDeviceInput* cameraInput = [self createCameraInput];
     AVCaptureDeviceInput* audioInput = [self createAudioInput];
     AVCaptureOutput* cameraOutput = [self createCameraOutput];
     AVCaptureOutput* audioOutput = [self createAudioOutput];
     AVCaptureSession* session = [self createSession];
     NSArray * inputs = [self createInputs];
+    NSArray * outputs = [self createOutputs];
     
     
     [session beginConfiguration];
     
-    for (AVCaptureDeviceInput * tmpInput in inputs) {
-        if([camerainput device]!=[tmpInput device] && [camerainput device] != [audioInput device] && [session canAddInput:tmpInput] ){
-           [session addInput:tmpInput];
-            if([[tmpInput device] hasMediaType:AVMediaTypeVideo]){
-                self.cameraInput = camerainput;
-                [self configureFPSForDevice:self.cameraDevice];
-            }
-        }
-    }
     
-    if(camerainput && [session canAddInput:camerainput]){
-        [session addInput:camerainput];
-        self.cameraInput = camerainput;
+    
+    if(cameraInput && [session canAddInput:cameraInput]){
+        [session addInput:cameraInput];
+        self.cameraInput = cameraInput;
         [self configureFPSForDevice:self.cameraDevice];
     }
     
@@ -226,6 +225,33 @@
         [session addOutput:audioOutput];
         self.audioOutput = audioOutput;
     }
+    
+    
+    for (AVCaptureDeviceInput * tmpInput in inputs) {
+        if([cameraInput device]!=[tmpInput device] && [cameraInput device] != [audioInput device] && [session canAddInput:tmpInput] ){
+            [session addInput:tmpInput];
+            if([[tmpInput device] hasMediaType:AVMediaTypeVideo]){
+                self.cameraInput = cameraInput;
+                [self configureFPSForDevice:self.cameraDevice];
+            }
+        }
+    }
+    
+    for (AVCaptureOutput * tmpOutput in outputs) {
+        if([cameraOutput class]!=[tmpOutput class] && [tmpOutput class] != [audioOutput class] && [session canAddOutput:tmpOutput] ){
+            
+            [session addOutput:tmpOutput];            
+            if(!self.cameraOutput && [tmpOutput connectionWithMediaType:AVMediaTypeVideo]){
+                self.cameraOutput = tmpOutput;
+            }
+            
+            if(!self.audioOutput && [tmpOutput connectionWithMediaType:AVMediaTypeAudio]){
+                self.audioOutput = tmpOutput;
+            }
+            
+        }
+    }
+    
     [session commitConfiguration];
     
     self.captureSession = session;
@@ -405,6 +431,7 @@
         }
         DefineWeakSelf();
         dispatch_async(dispatch_get_main_queue(), ^{
+            [wself setupSessionNotifcation];
             [wself.captureSession startRunning];
             wself.running = YES;
         });
@@ -426,6 +453,13 @@
 //- (void) resume{
 //    [self start];
 //}
+
+- (void)deallocSession{
+    [self stop];
+    [self removeSessionNotifcation];
+}
+
+
 
 
 - (void) switchCamera{
@@ -470,9 +504,75 @@
     
 }
 
-
-
 - (NSArray*) supportFrameRateRange{
     return self.cameraDevice.activeFormat.videoSupportedFrameRateRanges;
 }
+
+
+#pragma mark -
+#pragma mark session notification
+
+- (void) setupSessionNotifcation{
+    
+    NSNotificationCenter *notify =
+    [NSNotificationCenter defaultCenter];
+    [notify addObserver: self
+               selector: @selector(onVideoError:)
+                   name: AVCaptureSessionRuntimeErrorNotification
+                 object: self.captureSession];
+    [notify addObserver: self
+               selector: @selector(onVideoStart:)
+                   name: AVCaptureSessionDidStartRunningNotification
+                 object: self.captureSession];
+    [notify addObserver: self
+               selector: @selector(onVideoStop:)
+                   name: AVCaptureSessionDidStopRunningNotification
+                 object: self.captureSession];
+    [notify addObserver: self
+               selector: @selector(onVideoStop:)
+                   name: AVCaptureSessionWasInterruptedNotification
+                 object: self.captureSession];
+    [notify addObserver: self
+               selector: @selector(onVideoStart:)
+                   name: AVCaptureSessionInterruptionEndedNotification
+                 object: self.captureSession];
+
+}
+
+- (void) removeSessionNotifcation{
+    NSNotificationCenter *notify =
+    [NSNotificationCenter defaultCenter];
+    
+    [notify removeObserver:self forKeyPath:AVCaptureSessionRuntimeErrorNotification];
+    [notify removeObserver:self forKeyPath:AVCaptureSessionDidStartRunningNotification];
+    [notify removeObserver:self forKeyPath:AVCaptureSessionDidStopRunningNotification];
+    [notify removeObserver:self forKeyPath:AVCaptureSessionWasInterruptedNotification];
+    [notify removeObserver:self forKeyPath:AVCaptureSessionInterruptionEndedNotification];
+
+}
+
+- (void)onVideoError:(NSNotification *)notification{
+    if(self.delegate && [self.delegate respondsToSelector:@selector(captureVideoError:)]){
+        NSDictionary* dictionary = [notification userInfo];
+        NSError* error = dictionary[AVCaptureSessionErrorKey];
+        [self.delegate captureVideoError:error];
+    }
+}
+
+- (void)onVideoStart:(NSNotification *)notification{
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(captureVideoDidStart)]){
+        [self.delegate captureVideoDidStart];
+    }
+}
+
+- (void)onVideoStop:(NSNotification *)notification{
+    if(self.delegate && [self.delegate respondsToSelector:@selector(captureVideoDidStop)]){
+        [self.delegate captureVideoDidStop];
+    }
+}
+
+
+
+
 @end

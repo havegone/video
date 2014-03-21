@@ -13,6 +13,8 @@ typedef void(^FinishRecordBlock)(void);
 
 
 
+@class MovieEncoder;
+
 @interface VACapture : VideoDataCapture
 
 @property (nonatomic,copy) NSDictionary* audioSettings;
@@ -27,6 +29,9 @@ typedef void(^FinishRecordBlock)(void);
 @property (nonatomic,copy) StartRecordBlock startBlock;
 @property (nonatomic,copy) FinishRecordBlock finishBlock;
 @property (nonatomic,assign,readonly)BOOL isRecording;
+@property (nonatomic,assign,readonly)BOOL isMute;
+
+@property (nonatomic)MovieEncoder* encoder;
 
 
 //acl
@@ -40,7 +45,7 @@ typedef void(^FinishRecordBlock)(void);
 @property (nonatomic,assign) int format;
 
 //video
-//AVFileTypeQuickTimeMovie
+//AVFileTypeMPEG4
 @property (nonatomic,strong) NSString* const fileType;
 //default 128.0*1024.0;
 @property (nonatomic,assign) CGFloat vbitRate;
@@ -64,6 +69,23 @@ typedef void(^FinishRecordBlock)(void);
 - (void)stopRecord:(FinishRecordBlock)block;
 - (BOOL)pauseRecord;
 - (BOOL)resumeRecord;
+
+- (void)enableMute:(BOOL)mute;
+
+
+//delete last segment
+- (BOOL) deleteLastSegment;
+- (BOOL) deleteSegmentAtIndex:(NSInteger)index;
+
+//construct video with image
+- (void)writeImageAsMovie:(NSArray*)imageArray toPath:(NSString*)path size:(CGSize)size duration:(int)duration;
+
+//data
+- (void) startRecordWithData:(StartRecordBlock)block;
+- (void) stopRecordWithData:(FinishRecordBlock)block;
+- (BOOL) pauseRecordWithData;
+- (BOOL) resumeRecordWithData;
+
 
 
 @end

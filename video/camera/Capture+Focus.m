@@ -114,6 +114,56 @@
     }
 }
 
+- (BOOL) isSupportFocusRange{
+    AVCaptureDevice* device = self.cameraDevice;
+    return [device isAutoFocusRangeRestrictionSupported];
+}
+
+- (void) setFocusDistance:(CGFloat)distance{
+    if(distance <1.0){
+        self.effectiveScale = 1.0f;
+    }else{
+        CGFloat maxScale = [self getMaxScaleAndCropFactor];
+        if(distance > maxScale){
+            self.effectiveScale = maxScale;
+        }else{
+            self.effectiveScale = distance;
+        }
+    }
+    
+    AVCaptureStillImageOutput* output = [self _queryStillImageOutput];
+    AVCaptureConnection *videoConnection = [output connectionWithMediaType:AVMediaTypeVideo];
+    videoConnection.videoScaleAndCropFactor = self.effectiveScale;
+    
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:.025];
+    [self.previewLayer setAffineTransform:CGAffineTransformMakeScale(self.effectiveScale, self.effectiveScale)];
+    [CATransaction commit];
+}
+
+- (AVCaptureStillImageOutput*)_queryStillImageOutput{
+    AVCaptureStillImageOutput* stillImageOutput = nil;
+    for (AVCaptureOutput* output in self.captureSession.outputs) {
+        if( [output class] == [AVCaptureStillImageOutput class]){
+            stillImageOutput = (AVCaptureStillImageOutput*)output;
+            break;
+        }
+    }
+    
+    if(!stillImageOutput){
+        stillImageOutput = (AVCaptureStillImageOutput*)[self.captureSession.outputs objectAtIndex:0];
+    }
+    
+    return stillImageOutput;
+}
+- (CGFloat) getMaxScaleAndCropFactor{
+    AVCaptureStillImageOutput* stillImageOutput = [self _queryStillImageOutput];
+    AVCaptureConnection *videoConnection = [stillImageOutput connectionWithMediaType:AVMediaTypeVideo];
+    return videoConnection.videoMaxScaleAndCropFactor;
+}
+
+
 
 
 @end

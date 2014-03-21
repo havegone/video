@@ -16,7 +16,6 @@
     BOOL   _hasInterrupted;
 }
 
-@property(nonatomic)BOOL isPuase;
 @property(nonatomic,copy)StopDidBlock stopBlock;
 
 @end
@@ -27,20 +26,15 @@
     _timeOffset = kCMTimeZero;
     _lastAudioPts = kCMTimeZero;
     _lastVideoPts = kCMTimeZero;
+
 }
 
 - (void)pause{
-    @synchronized(self){
-        self.isPuase = YES;
-        _hasInterrupted = YES;
-    }
+    [super pause];
+    _hasInterrupted = YES;
+
 }
 
-- (void)resume{
-    @synchronized(self){
-        self.isPuase = NO;
-    }
-}
 
 - (void) stop:(StopDidBlock)block{
     self.stopBlock = block;
@@ -55,6 +49,7 @@
 
 }
 
+
 - (CMSampleBufferRef)adjustPts:(CMSampleBufferRef)sampleBuffer withTime:(CMTime)offset{
     
     CMSampleBufferRef sample = nil;
@@ -63,7 +58,7 @@
     CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, 0, nil,&timingArrayEntriesNeededOut);
     if(timingArrayEntriesNeededOut){
         timingArrayOut = malloc(sizeof(CMSampleTimingInfo)*timingArrayEntriesNeededOut);
-        CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, 0, timingArrayOut,&timingArrayEntriesNeededOut);
+        CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, timingArrayEntriesNeededOut, timingArrayOut,&timingArrayEntriesNeededOut);
     }
     
     if(timingArrayOut){
@@ -86,7 +81,7 @@
 
 
 - (void)captureOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer isVideo:(BOOL)isVideo{
-    
+
     if(!self.isRunning || self.isPuase){
         goto END;
     }
@@ -106,19 +101,21 @@
                 pts = CMTimeSubtract(pts, _timeOffset);
             }
             CMTime offset = CMTimeSubtract(pts, lastPts);
-            if(CMTIME_IS_VALID(_timeOffset)){
-                _timeOffset = CMTimeAdd(_timeOffset, offset);
-            }else{
+            //if(CMTIME_IS_VALID(_timeOffset)){
+            if(_timeOffset.value == 0){
                 _timeOffset = offset;
+            }else{
+                _timeOffset = CMTimeAdd(_timeOffset, offset);
             }
         }
-        _lastAudioPts.flags = 0;
-        _lastVideoPts.flags = 0;
+        
+        _lastAudioPts.flags = kCMTimeFlags_Valid;
+        _lastVideoPts.flags = kCMTimeFlags_Valid;
         
     }
 
     CFRetain(sampleBuffer);
-    if(CMTIME_IS_VALID(_timeOffset)){
+    if(CMTIME_IS_VALID(_timeOffset) && _timeOffset.value > 0){
         CFRelease(sampleBuffer);
         sampleBuffer = [self adjustPts:sampleBuffer withTime:_timeOffset];
     }
@@ -137,16 +134,13 @@
         _lastAudioPts = presentTimeStamp;
     }
     
-    
-    [super captureOutputSampleBuffer:sampleBuffer isVideo:isVideo];
 
+    [super captureOutputSampleBuffer:sampleBuffer isVideo:isVideo];
     CFRelease(sampleBuffer);
 
     
 END:
     return;
-
-    
 }
 
 

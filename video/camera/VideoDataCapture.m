@@ -56,7 +56,6 @@
     if ([self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo].supportsVideoOrientation) {
         [self.videoDataOutput connectionWithMediaType:AVMediaTypeVideo].videoOrientation = self.defaultAVCaptureVideoOrientation;
     }
-    
     [self.videoDataOutput setSampleBufferDelegate:self queue:self.sampleQueue];
 
     if(self.settings){
@@ -151,8 +150,8 @@
 #pragma mark camera sample delegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
-    static int count = 0;
-    NSLog(@"%d",count++);
+//    static int count = 0;
+//    NSLog(@"%d",count++);
     @synchronized(self){
         UIImage* image = nil;
         CGImageRef dstImage = nil;
